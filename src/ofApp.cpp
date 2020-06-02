@@ -11,23 +11,6 @@ glm::vec3 cameraPos;
 
 ofRectangle viewport;
 
-struct DirLight {
-	glm::vec3 direction;
-	glm::vec3 ambient;
-	glm::vec3 diffuse;
-	glm::vec3 specular;
-};
-
-struct PointLight {
-	glm::vec3 position;
-	float constant;
-	float linear;
-	float quadratic;
-	glm::vec3 ambient;
-	glm::vec3 diffuse;
-	glm::vec3 specular;
-};
-
 static ofMesh GetQuad() {
 	ofMesh quad;
 	quad.addVertex(glm::vec3(-1.0f, -1.0f, 0.0f));
@@ -66,9 +49,10 @@ static glm::mat4 GetCamFrustum(ofCamera cam)
 	return mat;
 }
 
-static glm::mat4 GetCamToWorld(ofCamera cam)
+static glm::mat4 GetCamToWorld(ofCamera cam, bool vFlip = true)
 {
 	glm::mat4 MVmatrix = cam.getModelViewMatrix();
+	MVmatrix = glm::scale(glm::mat4(1.0), glm::vec3(1.f, -1.f, 1.f)) * MVmatrix;
 	return glm::inverse(MVmatrix);
 }
 
@@ -79,7 +63,7 @@ void ofApp::setup() {
 	glm::vec3 cameraPos = glm::vec3(0, 0, 5);
 	glm::vec3 cameraTarget = glm::vec3(0, 0, 0);
 	glm::vec3 cameraUp = glm::vec3(0, 1, 0);
-	cam.setupPerspective(true, 60, 0.1, 17000);
+	cam.setupPerspective(false, 60, 0.1, 17000);
 	cam.setPosition(cameraPos);
 	cam.setTarget(cameraTarget);
 	cam.setOrientation(cameraUp);
@@ -98,7 +82,7 @@ void ofApp::setup() {
 	raymarchShader.setUniform3f("mat.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
 	raymarchShader.setUniform3f("mat.specular", glm::vec3(0.5f, 0.5f, 0.5f));
 	raymarchShader.setUniform1f("mat.shininess", 64.0f);
-	raymarchShader.setUniform3f("dirLight.direction", glm::vec3(1.0f, 1.0f, 1.0f));
+	raymarchShader.setUniform3f("dirLight.direction", glm::vec3(-1.0f, -1.0f, -1.0f));
 	raymarchShader.setUniform3f("dirLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
 	raymarchShader.setUniform3f("dirLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
 	raymarchShader.setUniform3f("dirLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
@@ -132,6 +116,7 @@ void ofApp::draw() {
 	raymarchShader.setUniformMatrix4f("camFrustum", camFrustum);
 	raymarchShader.setUniformMatrix4f("camToWorld", camToWorld);
 	raymarchShader.setUniform3f("cameraPos", cameraPos);
+	raymarchShader.setUniform1f("shadowPenumbra", 16.0f);
 	quad.draw();
 
 	raymarchShader.end();
