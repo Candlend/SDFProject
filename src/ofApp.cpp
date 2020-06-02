@@ -9,6 +9,8 @@ glm::mat4 camFrustum;
 glm::mat4 camToWorld;
 glm::vec3 cameraPos;
 
+ofRectangle viewport;
+
 static glm::mat4 GetCamFrustum(ofCamera cam)
 {
 	glm::mat4 mat = glm::identity<glm::mat4>();
@@ -34,17 +36,17 @@ static glm::mat4 GetCamToWorld(ofCamera cam)
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-	ofDisableArbTex();
-	phongShader.load("phong.vert", "phong.frag");
-	raymarchShader.load("vertex_color.vert", "vertex_color.frag");
+	raymarchShader.load("raymarch.vert", "raymarch.frag");
 
 	glm::vec3 cameraPos = glm::vec3(0, 0, 5);
 	glm::vec3 cameraTarget = glm::vec3(0, 0, 0);
 	glm::vec3 cameraUp = glm::vec3(0, 1, 0);
-	cam.setupPerspective(false, 60, 0.1, 17000);
+	cam.setupPerspective(true, 60, 0.1, 17000);
 	cam.setPosition(cameraPos);
 	cam.setTarget(cameraTarget);
 	cam.setOrientation(cameraUp);
+	viewport = ofGetCurrentRenderer()->getCurrentViewport();
+	cam.setAspectRatio(viewport.width / viewport.height);
 
 	ofEnableDepthTest();
 	model = glm::mat4(1.0);
@@ -70,6 +72,8 @@ void ofApp::setup() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
+	viewport = ofGetCurrentRenderer()->getCurrentViewport();
+	cam.setAspectRatio(viewport.width / viewport.height);
 	view = cam.getModelViewMatrix();
 	projection = cam.getProjectionMatrix();
 	camFrustum = GetCamFrustum(cam);
@@ -89,9 +93,14 @@ void ofApp::draw() {
 	raymarchShader.setUniformMatrix4f("camToWorld", camToWorld);
 	raymarchShader.setUniform3f("cameraPos", cameraPos);
 	quad.draw();
-	//ofDrawSphere(1);
 
 	raymarchShader.end();
+	phongShader.begin();
+	phongShader.setUniformMatrix4f("model", model);
+	phongShader.setUniformMatrix4f("view", view);
+	phongShader.setUniformMatrix4f("projection", projection);
+	//ofDrawSphere(1);
+	phongShader.end();
 	cam.end();
 }
 
