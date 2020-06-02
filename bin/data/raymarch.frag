@@ -1,8 +1,14 @@
 #version 410
 
-#define EPSILON 0.01
+#define EPSILON 0.001
 #define MAX_MARCHING_STEPS 1000
 #define MAX_DISTANCE 1000
+#define NR_POINT_LIGHTS 1
+
+#pragma include "struct.frag"
+#pragma include "sdPrimitive.frag"
+#pragma include "sdOperation.frag"
+#pragma include "shade.frag"
 
 out vec4 FragColor;
 
@@ -10,20 +16,22 @@ in vec2 texCoords;
 in vec3 rayDir;
 
 uniform vec3 cameraPos;
-            
-struct Ray
-{
-	vec3 ori;
-	vec3 dir;
-};
-
-float sdSphere(vec3 pos, vec3 center, float radius)
-{
-    return length(pos - center) - radius;
-}
+uniform Material mat;
+uniform DirLight dirLight;
+uniform PointLight pointLights[NR_POINT_LIGHTS];
 
 float map(vec3 pos) {
-    return sdSphere(pos, vec3(0.0f), 1.0f);
+	float sphere1 = sdSphere(pos, vec3(0.0f, 0.0f, 0.0f), 1.0f);
+	float sphere2 = sdSphere(pos, vec3(0.0f, 1.5f, 0.0f), 1.5f);
+    return opSmoothUnion(sphere1, sphere2, 0.5);
+}
+
+vec3 shade(vec3 hitPosition, vec3 normal, vec3 viewDir) {
+	vec3 result = calcDirLight(mat, dirLight, normal, viewDir);
+	for (int i = 0; i < NR_POINT_LIGHTS; i++) {
+		result += calcPointLight(mat, pointLights[i], normal, hitPosition, viewDir);
+	}
+    return result;
 }
 
 Ray generateRay(vec3 ori,vec3 dir)
@@ -32,6 +40,16 @@ Ray generateRay(vec3 ori,vec3 dir)
 	ray.ori = ori;
 	ray.dir = dir;
 	return ray;
+}
+
+vec3 calcNormal(vec3 p)
+{
+    const float h = 0.0001;
+    const vec2 k = vec2(1,-1);
+    return normalize( k.xyy * map(p + k.xyy * h) + 
+                      k.yyx * map(p + k.yyx * h) + 
+                      k.yxy * map(p + k.yxy * h) + 
+                      k.xxx * map(p + k.xxx * h));
 }
 
 bool rayMarch(Ray ray, out vec3 p){
@@ -50,14 +68,15 @@ bool rayMarch(Ray ray, out vec3 p){
 
 void main()
 {
-	vec3 result = vec3(0.0f);
     Ray ray = generateRay(cameraPos, normalize(rayDir));
 	vec3 hitPosition;
 	bool hit = rayMarch(ray, hitPosition);
 	if (hit) {
-        result = vec3(1.0f);
+		vec3 normal = calcNormal(hitPosition);
+		vec3 viewDir = normalize(cameraPos - hitPosition);
+        FragColor = vec4(shade(hitPosition, normal, viewDir), 1);
     }
-	//FragColor = vec4(rayDir.x, rayDir.y, rayDir.z, 1);
-	//FragColor = vec4(cameraPos.x / 10.0f, cameraPos.y / 10.0f, cameraPos.z / 10.0f, 1.0f);
-	FragColor = vec4(result, 1.0f);
+	else{
+		FragColor = vec4(0.0f);
+	}
 }

@@ -5,9 +5,6 @@ layout ( location = 1 ) in vec4 aTangent;
 layout ( location = 2 ) in vec3 aNormal;
 layout ( location = 3 ) in vec2 aTexCoords;
 
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
 uniform mat4 camFrustum;
 uniform mat4 camToWorld;
 

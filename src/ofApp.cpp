@@ -11,6 +11,44 @@ glm::vec3 cameraPos;
 
 ofRectangle viewport;
 
+struct DirLight {
+	glm::vec3 direction;
+	glm::vec3 ambient;
+	glm::vec3 diffuse;
+	glm::vec3 specular;
+};
+
+struct PointLight {
+	glm::vec3 position;
+	float constant;
+	float linear;
+	float quadratic;
+	glm::vec3 ambient;
+	glm::vec3 diffuse;
+	glm::vec3 specular;
+};
+
+static ofMesh GetQuad() {
+	ofMesh quad;
+	quad.addVertex(glm::vec3(-1.0f, -1.0f, 0.0f));
+	quad.addVertex(glm::vec3(1.0f, -1.0f, 0.0f));
+	quad.addVertex(glm::vec3(1.0f, 1.0f, 0.0f));
+	quad.addVertex(glm::vec3(-1.0f, 1.0f, 0.0f));
+
+	quad.addTexCoord(glm::vec2(0.0f, 0.0f));
+	quad.addTexCoord(glm::vec2(1.0f, 0.0f));
+	quad.addTexCoord(glm::vec2(1.0f, 1.0f));
+	quad.addTexCoord(glm::vec2(0.0f, 1.0f));
+
+	quad.addIndex(0);
+	quad.addIndex(2);
+	quad.addIndex(1);
+	quad.addIndex(0);
+	quad.addIndex(3);
+	quad.addIndex(2);
+	return quad;
+}
+
 static glm::mat4 GetCamFrustum(ofCamera cam)
 {
 	glm::mat4 mat = glm::identity<glm::mat4>();
@@ -52,22 +90,26 @@ void ofApp::setup() {
 	model = glm::mat4(1.0);
 	view = cam.getModelViewMatrix();
 	projection = cam.getProjectionMatrix();
-	quad.addVertex(glm::vec3(-1.0f, -1.0f, 0.0f));
-	quad.addVertex(glm::vec3(1.0f, -1.0f, 0.0f));
-	quad.addVertex(glm::vec3(1.0f, 1.0f, 0.0f));
-	quad.addVertex(glm::vec3(-1.0f, 1.0f, 0.0f));
 
-	quad.addTexCoord(glm::vec2(0.0f, 0.0f));
-	quad.addTexCoord(glm::vec2(1.0f, 0.0f));
-	quad.addTexCoord(glm::vec2(1.0f, 1.0f));
-	quad.addTexCoord(glm::vec2(0.0f, 1.0f));
+	quad = GetQuad();
 
-	quad.addIndex(0);
-	quad.addIndex(2);
-	quad.addIndex(1);
-	quad.addIndex(0);
-	quad.addIndex(3);
-	quad.addIndex(2);
+	raymarchShader.begin();
+	raymarchShader.setUniform3f("mat.ambient", glm::vec3(0.5f, 0.5f, 0.5f));
+	raymarchShader.setUniform3f("mat.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+	raymarchShader.setUniform3f("mat.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+	raymarchShader.setUniform1f("mat.shininess", 64.0f);
+	raymarchShader.setUniform3f("dirLight.direction", glm::vec3(1.0f, 1.0f, 1.0f));
+	raymarchShader.setUniform3f("dirLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+	raymarchShader.setUniform3f("dirLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
+	raymarchShader.setUniform3f("dirLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+	raymarchShader.setUniform3f("pointLights[0].position", glm::vec3(-5.7f,  5.2f,  -2.0f));
+	raymarchShader.setUniform3f("pointLights[0].ambient", 0.05f, 0.0f, 0.0f);
+	raymarchShader.setUniform3f("pointLights[0].diffuse", 0.8f, 0.0f, 0.0f);
+	raymarchShader.setUniform3f("pointLights[0].specular", 1.0f, 0.0f, 0.0f);
+	raymarchShader.setUniform1f("pointLights[0].constant", 1.0f);
+	raymarchShader.setUniform1f("pointLights[0].linear", 0.09);
+	raymarchShader.setUniform1f("pointLights[0].quadratic", 0.032);
+	phongShader.end();
 }
 
 //--------------------------------------------------------------
@@ -85,9 +127,7 @@ void ofApp::update() {
 void ofApp::draw() {
 	cam.begin();
 	raymarchShader.begin();
-	raymarchShader.setUniformMatrix4f("model", model);
-	raymarchShader.setUniformMatrix4f("view", view);
-	raymarchShader.setUniformMatrix4f("projection", projection);
+
 
 	raymarchShader.setUniformMatrix4f("camFrustum", camFrustum);
 	raymarchShader.setUniformMatrix4f("camToWorld", camToWorld);
