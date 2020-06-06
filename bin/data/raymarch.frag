@@ -23,8 +23,9 @@ uniform float shadowPenumbra;
 float map(vec3 pos) {
 	float sphere1 = sdSphere(pos, vec3(0.0f, 0.0f, 0.0f), 1.0f);
 	float sphere2 = sdSphere(pos, vec3(0.0f, 1.5f, 0.0f), 1.5f);
+	float sphere3 = sdSphere(pos, vec3(0.0f, 1.5f, 1.0f), 1.0f);
     float plane = sdPlane(pos, vec3(0.0f, -1.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 1.0f);
-    return opUnion(opSmoothUnion(sphere1, sphere2, 1.0f), plane);
+    return opUnion(opUnion(opSmoothUnion(sphere1, sphere2, 1.0f), sphere3), plane);
 }
 
 Ray generateRay(vec3 ori,vec3 dir)
@@ -43,6 +44,20 @@ vec3 calcNormal(vec3 p)
                       k.yyx * map(p + k.yyx * h) + 
                       k.yxy * map(p + k.yxy * h) + 
                       k.xxx * map(p + k.xxx * h));
+}
+
+float calcAO(vec3 pos, vec3 normal)
+{
+	float occ = 0.0;
+    float sca = 1.0;
+    for (int i = 0; i < 20; i++)
+    {
+        float h = 0.001 + 0.15 * float(i) / 4.0;
+        float d = map(pos + h * normal);
+        occ += (h - d) * sca;
+        sca *= 0.95;
+    }
+    return clamp(1.0 - 0.5 * occ, 0.0, 1.0);    
 }
 
 
@@ -92,7 +107,8 @@ vec3 calcDirLight(vec3 p, Material mat, DirLight light, vec3 normal, vec3 viewDi
 	}
     Ray shadowRay = generateRay(p + 0.01 * normal, L);
     float shadow = softShadow(shadowRay, 0.0, MAX_DISTANCE, shadowPenumbra);
-    return ambient + (diffuse + specular) * shadow;
+	float ao = calcAO(p, normal);
+    return ambient * ao + (diffuse + specular) * shadow;
 }
 
 vec3 calcPointLight(vec3 p, Material mat, PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
@@ -114,7 +130,8 @@ vec3 calcPointLight(vec3 p, Material mat, PointLight light, vec3 normal, vec3 fr
 	specular *= attenuation;
     Ray shadowRay = generateRay(p + 0.01 * normal, L);
     float shadow = softShadow(shadowRay, 0.0, distance, shadowPenumbra);
-    return ambient + (diffuse + specular) * shadow;
+	float ao = calcAO(p, normal);
+    return ambient * ao + (diffuse + specular) * shadow;
 }
 
 
