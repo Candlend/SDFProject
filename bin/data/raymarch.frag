@@ -99,11 +99,11 @@ vec3 calcDirLight(vec3 p, Material mat, DirLight light, vec3 normal, vec3 viewDi
 {
 	vec3 L = -normalize(light.direction);
 	vec3 R = normalize(-reflect(L, normal));
-    vec3 ambient = mat.ambient * light.ambient;
-    vec3 diffuse = mat.diffuse * light.diffuse * max(dot(normal, L), 0.0);
+    vec3 ambient = mat.ambient * light.color;
+    vec3 diffuse = mat.diffuse * light.color * max(dot(normal, L), 0.0);
 	vec3 specular = vec3(0);
 	if (dot(normal, L) > 0) {
-		specular = mat.specular * light.specular * pow(max(dot(R, viewDir), 0.0), mat.shininess);
+		specular = mat.specular * light.color * pow(max(dot(R, viewDir), 0.0), mat.shininess);
 	}
     Ray shadowRay = generateRay(p + 0.01 * normal, L);
     float shadow = softShadow(shadowRay, 0.0, MAX_DISTANCE, shadowPenumbra);
@@ -116,15 +116,17 @@ vec3 calcPointLight(vec3 p, Material mat, PointLight light, vec3 normal, vec3 fr
 	vec3 path = light.position - fragPos;
 	vec3 L = normalize(path);
 	vec3 R = normalize(-reflect(L, normal));
-    vec3 ambient = mat.ambient * light.ambient;
-    vec3 diffuse = mat.diffuse * light.diffuse * max(dot(normal, L), 0.0);
+    vec3 ambient = mat.ambient * light.color;
+    vec3 diffuse = mat.diffuse * light.color * max(dot(normal, L), 0.0);
 	vec3 specular = vec3(0);
 	if (dot(normal, L) > 0) {
-		specular = mat.specular * light.specular * pow(max(dot(R, viewDir), 0.0), mat.shininess);
+		specular = mat.specular * light.color * pow(max(dot(R, viewDir), 0.0), mat.shininess);
 	}
-
+	float constant = 1.0f;
+	float linear = 0.09;
+	float quadratic = 0.032;
 	float distance = length(light.position - fragPos);
-	float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+	float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance));
 	ambient  *= attenuation; 
 	diffuse  *= attenuation;
 	specular *= attenuation;
