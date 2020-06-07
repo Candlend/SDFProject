@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <Settings>
 	<Shadow_Penumbra>16</Shadow_Penumbra>
-  <AO_Step_Size>0.05</AO_Step_Size>
-  <AO_Iterations>20</AO_Iterations>
-  <AO_Intensity>0.1</AO_Intensity>
+	<AO_Step_Size>0.05</AO_Step_Size>
+	<AO_Iterations>20</AO_Iterations>
+	<AO_Intensity>0.05</AO_Intensity>
 	<Directional_Light>
 		<Direction>-1, -1, -1</Direction>
-		<Color>0.368686, 0.361992, 0.375, 1</Color>
+		<Color>0.5, 0.5, 0.5, 1</Color>
 	</Directional_Light>
 	<Point_Light_0>
 		<Position>-3.08205, 4.20659, 3.16535</Position>
-		<Color>1, 0, 0.0190959, 1</Color>
+		<Color>1, 0, 0, 1</Color>
 	</Point_Light_0>
 	<Point_Light_1>
 		<Position>4.20659, 4.72721, 0.260308</Position>
@@ -20,4 +20,51 @@
 		<Position>2.12411, 1.08289, -2.04082</Position>
 		<Color>0.4927, 0.5, 0, 1</Color>
 	</Point_Light_2>
+	<Scene_Index>0</Scene_Index>
+	<Ray_Marching_Step_Scale>0.5</Ray_Marching_Step_Scale>
+	<Smoothness>0.5</Smoothness>
+	<Deformation_Strength>0.1</Deformation_Strength>
+	<Lights>
+		<Directional_Light>
+			<Enabled>1</Enabled>
+			<Direction>-1, -1, -1</Direction>
+			<Color>0.95, 0.95, 0.95, 1</Color>
+		</Directional_Light>
+		<Point_Light_0>
+			<Enabled>1</Enabled>
+			<Position>0, 4.37658, 4.37658</Position>
+			<Color>0.8, 0.0443654, 0, 1</Color>
+		</Point_Light_0>
+		<Point_Light_1>
+			<Enabled>1</Enabled>
+			<Position>-3.0608, -0.935837, 2.25161</Position>
+			<Color>0, 0.0180364, 0.492857, 1</Color>
+		</Point_Light_1>
+		<Point_Light_2>
+			<Enabled>1</Enabled>
+			<Position>-3.0608, 4.37658, 0</Position>
+			<Color>0.857143, 0.6501, 0, 1</Color>
+		</Point_Light_2>
+	</Lights>
+	<Materials>
+		<Material_0>
+			<Ambient>0.1, 0.1, 0.1, 1</Ambient>
+			<Diffuse>0.319298, 0.44448, 0.5, 1</Diffuse>
+			<Specular>0.312509, 0.344896, 0.5, 1</Specular>
+			<Shininess>32</Shininess>
+		</Material_0>
+		<Material_1>
+			<Ambient>0.1, 0.1, 0.1, 1</Ambient>
+			<Diffuse>0.5, 0.5, 0.5, 1</Diffuse>
+			<Specular>0.5, 0.5, 0.5, 1</Specular>
+			<Shininess>32</Shininess>
+		</Material_1>
+		<Material_2>
+			<Ambient>0.1, 0.1, 0.1, 1</Ambient>
+			<Diffuse>0.5, 0.5, 0.5, 1</Diffuse>
+			<Specular>0.5, 0.5, 0.5, 1</Specular>
+			<Shininess>32</Shininess>
+		</Material_2>
+	</Materials>
+	<Step_Scale>1</Step_Scale>
 </Settings>

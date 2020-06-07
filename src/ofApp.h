@@ -4,8 +4,10 @@
 #include "ofxGui.h"
 #include "DirLight.h"
 #include "PointLight.h"
+#include "Material.h"
 
 #define NR_POINT_LIGHTS 3
+#define NR_MATERIALS 3
 
 class ofApp : public ofBaseApp {
 
@@ -33,15 +35,18 @@ public:
 	ofParameterGroup parameters;
 	ofParameter<float> shadowPenumbra;
 	ofParameter<float> aoStepSize;
+	ofParameter<int> sceneIndex;
 	ofParameter<int> aoIterations;
 	ofParameter<float> aoIntensity;
-
+	ofParameter<float> stepScale;
+	ofParameter<float> smoothness;
+	ofParameter<float> deformStrength;
 	ofEasyCam cam;
 	ofShader raymarchShader;
 	ofMesh quad;
 
 	DirLight dirLight;
 	PointLight pointLights[NR_POINT_LIGHTS];
-	
+	Material materials[NR_MATERIALS];
 	float elapsedTime;
 };

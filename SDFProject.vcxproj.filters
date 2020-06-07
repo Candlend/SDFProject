@@ -107,10 +107,13 @@
     <ClInclude Include="src\DirLight.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\LightRenderer.h">
+    <ClInclude Include="src\PointLight.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\PointLight.h">
+    <ClInclude Include="src\Material.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PropertyRenderer.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
@@ -131,6 +134,9 @@
       <Filter>data</Filter>
     </None>
     <None Include="bin\data\struct.frag">
+      <Filter>data</Filter>
+    </None>
+    <None Include="bin\data\scene.frag">
       <Filter>data</Filter>
     </None>
   </ItemGroup>
