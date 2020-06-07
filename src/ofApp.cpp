@@ -104,6 +104,7 @@ void ofApp::update() {
 	camFrustum = GetCamFrustum(cam);
 	camToWorld = GetCamToWorld(cam);
 	cameraPos = cam.getGlobalPosition();
+	elapsedTime = ofGetElapsedTimef();
 }
 
 //--------------------------------------------------------------
@@ -121,6 +122,7 @@ void ofApp::draw() {
 	raymarchShader.setUniform1f("aoStepSize", aoStepSize);
 	raymarchShader.setUniform1i("aoIterations", aoIterations);
 	raymarchShader.setUniform1f("aoIntensity", aoIntensity);
+	raymarchShader.setUniform1f("elapsedTime", elapsedTime);
 	dirLight.setUniform(raymarchShader);
 	for (int i = 0; i < NR_POINT_LIGHTS; i++) {
 		pointLights[i].setUniform(raymarchShader, "pointLights[" + std::to_string(i) + "]");

@@ -42,5 +42,6 @@ public:
 
 	DirLight dirLight;
 	PointLight pointLights[NR_POINT_LIGHTS];
-
+	
+	float elapsedTime;
 };

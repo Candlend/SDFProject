@@ -18,6 +18,7 @@ uniform float aoStepSize;
 uniform int aoIterations;
 uniform float aoIntensity;
 
+uniform float elapsedTime;
 uniform vec3 cameraPos;
 uniform Material mat;
 uniform DirLight dirLight;
@@ -26,7 +27,7 @@ uniform float shadowPenumbra;
 
 float map(vec3 pos) {
 	float sphere1 = sdSphere(pos, vec3(0.0f, 0.0f, 0.0f), 1.0f);
-	float sphere2 = sdSphere(pos, vec3(0.0f, 1.5f, 0.0f), 1.5f);
+	float sphere2 = sdSphere(pos, vec3(0.0f, 1.5f + sin(elapsedTime), 0.0f), 1.5f);
 	float sphere3 = sdSphere(pos, vec3(0.0f, 1.5f, 1.0f), 1.0f);
     float plane = sdPlane(pos, vec3(0.0f, -1.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 1.0f);
     return opUnion(opUnion(opSmoothUnion(sphere1, sphere2, 1.0f), sphere3), plane);
