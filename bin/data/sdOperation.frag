@@ -50,6 +50,6 @@ float opRound(float primitive, float rad)
 
 float opExtrusion(vec3 p, float primitive, float h)
 {
-	vec2 w = vec2(primitive, abs(p.z-h));
+	vec2 w = vec2(primitive, abs(p.z)-h);
 	return min(max(w.x,w.y), 0.0) + length(max(w, 0.0));
 }

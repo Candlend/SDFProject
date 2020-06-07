@@ -18,6 +18,10 @@ uniform float aoStepSize;
 uniform int aoIterations;
 uniform float aoIntensity;
 
+uniform mat4 trans;
+uniform float height;
+uniform float strength;
+
 uniform float elapsedTime;
 uniform vec3 cameraPos;
 uniform Material mat;
@@ -26,11 +30,11 @@ uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform float shadowPenumbra;
 
 float map(vec3 pos) {
-	float sphere1 = sdSphere(pos, vec3(0.0f, 0.0f, 0.0f), 1.0f);
-	float sphere2 = sdSphere(pos, vec3(0.0f, 1.5f + sin(elapsedTime), 0.0f), 1.5f);
-	float sphere3 = sdSphere(pos, vec3(0.0f, 1.5f, 1.0f), 1.0f);
+	//float sphere1 = sdSphere(pos, vec3(0.0f, 0.0f, 0.0f), 1.0f);
+	//float sphere2 = sdSphere(pos, vec3(0.0f, 1.5f + 3.0 * sin(elapsedTime), 0.0f), 1.5f);
+	//float sphere3 = sdSphere(pos, vec3(0.0f, 1.5f, 1.0f), 1.0f);
     float plane = sdPlane(pos, vec3(0.0f, -1.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 1.0f);
-    return opUnion(opUnion(opSmoothUnion(sphere1, sphere2, 1.0f), sphere3), plane);
+    return opUnion(opRound(cross3d, 0.1), plane);
 }
 
 Ray generateRay(vec3 ori,vec3 dir)
@@ -92,7 +96,7 @@ float softShadow(Ray ray, float tMin, float tMmax, float k){
         float d = sqrt(h * h - y * y);
         result = min(result, k * d / max(0.0, t - y));
         ph = h;
-        t += h;
+        t += h/2.0;
     }
     return result;
 }
