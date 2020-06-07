@@ -30,19 +30,33 @@ uniform DirLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform float shadowPenumbra;
 
+// sin(elapsedTime)
+
 ObjectData map(vec3 pos) {
-	ObjectData sphere1 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, 0.0f), 1.0f), materials[0]);
-    ObjectData sphere2 = ObjectData(sdSphere(pos, vec3(0.0f, 1.5f + sin(elapsedTime), 0.0f), 1.5f), materials[1]);
-    return opSmoothIntersection(sphere2, sphere1, 0.2);
+    ObjectData sphere0 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, 0.0f), 1.0f), materials[0]);
+    // float sphereDis = 0.8f;
+    // float sphereR = 0.55f;
+    // float smoothR = 0.2;
+    float sphereDis = 0.5f;
+    float sphereR = 0.65f;
+    float smoothR = 0.1;
+    ObjectData sphere1 = ObjectData(sdSphere(pos, vec3(sphereDis, 0.0f, 0.0f), sphereR), materials[0]);
+    ObjectData sphere2 = ObjectData(sdSphere(pos, vec3(0.0f, sphereDis, 0.0f), sphereR), materials[0]);
+    ObjectData sphere3 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, sphereDis), sphereR), materials[0]);
+    ObjectData sphere4 = ObjectData(sdSphere(pos, vec3(-sphereDis, 0.0f, 0.0f), sphereR), materials[0]);
+    ObjectData sphere5 = ObjectData(sdSphere(pos, vec3(0.0f, -sphereDis, 0.0f), sphereR), materials[0]);
+    ObjectData sphere6 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, -sphereDis), sphereR), materials[0]);
+
+    ObjectData temp = opSmoothSubtraction(sphere1, sphere0, smoothR);
+    temp = opSmoothSubtraction(sphere2, temp, smoothR);
+    temp = opSmoothSubtraction(sphere3, temp, smoothR);
+    temp = opSmoothSubtraction(sphere4, temp, smoothR);
+    temp = opSmoothSubtraction(sphere5, temp, smoothR);
+    temp = opSmoothSubtraction(sphere6, temp, smoothR);
+
+    return temp;
 }
 
-// float map(vec3 pos) {
-// 	//float sphere1 = sdSphere(pos, vec3(0.0f, 0.0f, 0.0f), 1.0f);
-// 	//float sphere2 = sdSphere(pos, vec3(0.0f, 1.5f + 3.0 * sin(elapsedTime), 0.0f), 1.5f);
-// 	//float sphere3 = sdSphere(pos, vec3(0.0f, 1.5f, 1.0f), 1.0f);
-//     float plane = sdPlane(pos, vec3(0.0f, -1.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 1.0f);
-//     return opUnion(opRound(cross3d, 0.1), plane);
-// }
 
 Ray generateRay(vec3 ori,vec3 dir)
 {
