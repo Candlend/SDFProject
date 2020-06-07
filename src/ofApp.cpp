@@ -58,16 +58,29 @@ static glm::mat4 GetCamToWorld(ofCamera cam, bool vFlip = true)
 
 void ofApp::setupGUI() {
 	parameters.setName("Settings");
+	parameters.add(sceneIndex.set("Scene Index", 0, 0, 2));
+	parameters.add(aoIterations.set("AO Iterations", 20, 0, 100));
 	parameters.add(shadowPenumbra.set("Shadow Penumbra", 16.0f, 1.0f, 100.0f));
 	parameters.add(aoStepSize.set("AO Step Size", 0.05f, 0.001f, 0.1f));
-	parameters.add(aoIterations.set("AO Iterations", 20, 0, 100));
 	parameters.add(aoIntensity.set("AO Intensity", 0.1f, 0.0f, 1.0f));
+	parameters.add(stepScale.set("Step Scale", 0.5f, 0.0f, 1.0f));
+	parameters.add(smoothness.set("Smoothness", 0.5f, 0.0f, 1.0f));
+	parameters.add(deformStrength.set("Deformation Strength", 0.1f, 0.0f, 1.0f));
+	ofParameterGroup lightGroup("Lights");
 	dirLight.setup("Directional Light");
-	parameters.add(dirLight.parameters);
+	lightGroup.add(dirLight.parameters);
 	for (int i = 0; i < NR_POINT_LIGHTS; i++) {
-		parameters.add(pointLights[i].parameters);
+		lightGroup.add(pointLights[i].parameters);
 		pointLights[i].setup("Point Light " + std::to_string(i));
 	}
+	parameters.add(lightGroup);
+	ofParameterGroup materialGroup("Materials");
+	for (int i = 0; i < NR_MATERIALS; i++) {
+		materialGroup.add(materials[i].parameters);
+		materials[i].setup("Material " + std::to_string(i));
+	}
+	parameters.add(materialGroup);
+
 	gui.setup(parameters);
 	gui.loadFromFile("settings.xml");
 }
@@ -125,11 +138,18 @@ void ofApp::draw() {
 	raymarchShader.setUniform1f("shadowPenumbra", shadowPenumbra);
 	raymarchShader.setUniform1f("aoStepSize", aoStepSize);
 	raymarchShader.setUniform1i("aoIterations", aoIterations);
+	raymarchShader.setUniform1i("sceneIndex", sceneIndex);
 	raymarchShader.setUniform1f("aoIntensity", aoIntensity);
 	raymarchShader.setUniform1f("elapsedTime", elapsedTime);
+	raymarchShader.setUniform1f("stepScale", stepScale);
+	raymarchShader.setUniform1f("smoothness", smoothness);
+	raymarchShader.setUniform1f("deformStrength", deformStrength);
 	dirLight.setUniform(raymarchShader);
 	for (int i = 0; i < NR_POINT_LIGHTS; i++) {
 		pointLights[i].setUniform(raymarchShader, "pointLights[" + std::to_string(i) + "]");
+	}
+	for (int i = 0; i < NR_MATERIALS; i++) {
+		materials[i].setUniform(raymarchShader, "materials[" + std::to_string(i) + "]");
 	}
 	quad.draw();
 	raymarchShader.end();

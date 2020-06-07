@@ -17,11 +17,13 @@ struct ObjectData {
 }; 
 
 struct DirLight {
+	bool enabled;
     vec3 direction;
     vec3 color;
 };
 
 struct PointLight {
+	bool enabled;
     vec3 position;
     vec3 color;
 };

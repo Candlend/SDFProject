@@ -4,7 +4,7 @@
 #define MAX_MARCHING_STEPS 1000
 #define MAX_DISTANCE 1000
 #define NR_POINT_LIGHTS 3
-#define NR_MATERIALS 2
+#define NR_MATERIALS 3
 
 #pragma include "struct.frag"
 #pragma include "sdPrimitive.frag"
@@ -17,12 +17,12 @@ in vec3 rayDir;
 
 uniform float aoStepSize;
 uniform int aoIterations;
+uniform int sceneIndex;
 uniform float aoIntensity;
 
-uniform mat4 trans;
-uniform float height;
-uniform float strength;
-
+uniform mat4 transform;
+uniform float deformStrength;
+uniform float stepScale;
 uniform float elapsedTime;
 uniform vec3 cameraPos;
 uniform Material materials[NR_MATERIALS];
@@ -30,19 +30,18 @@ uniform DirLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform float shadowPenumbra;
 
+#pragma include "scene.frag"
 ObjectData map(vec3 pos) {
-	ObjectData sphere1 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, 0.0f), 1.0f), materials[0]);
-    ObjectData sphere2 = ObjectData(sdSphere(pos, vec3(0.0f, 1.5f + sin(elapsedTime), 0.0f), 1.5f), materials[1]);
-    return opSmoothIntersection(sphere2, sphere1, 0.2);
+	if (sceneIndex == 0){
+		return scene0(pos);
+	}
+	else if (sceneIndex == 1) {
+		return scene1(pos);
+	}
+	else if (sceneIndex == 2) {
+		return scene2(pos);
+	}
 }
-
-// float map(vec3 pos) {
-// 	//float sphere1 = sdSphere(pos, vec3(0.0f, 0.0f, 0.0f), 1.0f);
-// 	//float sphere2 = sdSphere(pos, vec3(0.0f, 1.5f + 3.0 * sin(elapsedTime), 0.0f), 1.5f);
-// 	//float sphere3 = sdSphere(pos, vec3(0.0f, 1.5f, 1.0f), 1.0f);
-//     float plane = sdPlane(pos, vec3(0.0f, -1.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 1.0f);
-//     return opUnion(opRound(cross3d, 0.1), plane);
-// }
 
 Ray generateRay(vec3 ori,vec3 dir)
 {
@@ -74,27 +73,27 @@ float calcAO(vec3 pos, vec3 normal)
 }
 
 
-float shadow(Ray ray, float tMin, float tMmax)
+float shadow(Ray ray, float tMin, float tMax)
 {
     float result = 1.0f;
     float t = tMin;
     for (int i = 0; i < MAX_MARCHING_STEPS; i++) {
-        if (t > tMmax) break;
+        if (t > tMax) break;
         float h = map(ray.ori + t * ray.dir).d;
         if (abs(h) < EPSILON) {
             return 0.0f;
         }
-        t += h;
+        t += h * stepScale;
     }
     return result;
 }
 
-float softShadow(Ray ray, float tMin, float tMmax, float k){
+float softShadow(Ray ray, float tMin, float tMax, float k){
     float result = 1.0f;
     float ph = 1e20;
     float t = tMin;
     for (int i = 0; i < MAX_MARCHING_STEPS; i++) {
-        if (t > tMmax) break;
+        if (t > tMax) break;
         float h = map(ray.ori + t * ray.dir).d;
         if (abs(h) < EPSILON) {
             return 0.0f;
@@ -103,13 +102,16 @@ float softShadow(Ray ray, float tMin, float tMmax, float k){
         float d = sqrt(h * h - y * y);
         result = min(result, k * d / max(0.0, t - y));
         ph = h;
-        t += h/2.0;
+        t += h * stepScale;
     }
     return result;
 }
 
 vec3 calcDirLight(vec3 p, Material mat, DirLight light, vec3 normal, vec3 viewDir)
 {
+	if (!light.enabled){
+		return vec3(0);
+	}
 	vec3 L = -normalize(light.direction);
 	vec3 R = normalize(-reflect(L, normal));
     vec3 ambient = mat.ambient * light.color;
@@ -126,6 +128,9 @@ vec3 calcDirLight(vec3 p, Material mat, DirLight light, vec3 normal, vec3 viewDi
 
 vec3 calcPointLight(vec3 p, Material mat, PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
+	if (!light.enabled){
+		return vec3(0);
+	}
 	vec3 path = light.position - fragPos;
 	vec3 L = normalize(path);
 	vec3 R = normalize(-reflect(L, normal));
@@ -164,14 +169,14 @@ bool rayMarch(Ray ray, out vec3 p, out Material material){
     for (int i = 0; i < MAX_MARCHING_STEPS; i++) {
         if (t > MAX_DISTANCE) return false;
         p = ray.ori + t * ray.dir;
-        ObjectData OData;
-        OData = map(p);
-        float d = OData.d;
-        material = OData.mat;
+        ObjectData od;
+        od = map(p);
+        float d = od.d;
+        material = od.mat;
         if (abs(d) < EPSILON) {
             return true;
         }
-        t += d;
+        t += d * stepScale;
     }
     return false;
 }
