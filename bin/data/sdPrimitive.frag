@@ -8,15 +8,15 @@ float sdPlane(vec3 p, vec3 center, vec3 n, float h)
   return dot(p - center, n) + h;
 }
 
-float sdCube(vec3 p, vec3 b)
+float sdCube(vec3 p, vec3 center, vec3 b)
 {
-    vec3 q = abs(p)-b;
+    vec3 q = abs(p - center)-b;
     return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0);
 }
 
-float sdRoundCube(vec3 p, vec3 b, float r)
+float sdRoundCube(vec3 p, vec3 center, vec3 b, float r)
 {
-    vec3 q = abs(p)-b;
+    vec3 q = abs(p - center)-b;
     return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0) - r;
 }
 
