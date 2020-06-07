@@ -28,3 +28,9 @@ float sd2DCross(vec2 p, vec2 b, float r)
      vec2 w = (k>0) ? q:vec2(b.y-b.x, -k);
      return sign(k)*length(max(w, 0.0))+r;
 }
+
+float sdCylinder(vec3 p, vec3 center, float h, float r)
+{
+    vec2 d = abs(vec2(length((p-center).xz), (p-center).y)) - vec2(h,r);
+    return min(max(d.x,d.y),0.0)+ length(max(d, 0.0));
+}
