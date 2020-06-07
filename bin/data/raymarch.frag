@@ -4,6 +4,7 @@
 #define MAX_MARCHING_STEPS 1000
 #define MAX_DISTANCE 1000
 #define NR_POINT_LIGHTS 3
+#define NR_MATERIALS 2
 
 #pragma include "struct.frag"
 #pragma include "sdPrimitive.frag"
@@ -20,17 +21,15 @@ uniform float aoIntensity;
 
 uniform float elapsedTime;
 uniform vec3 cameraPos;
-uniform Material mat;
+uniform Material materials[NR_MATERIALS];
 uniform DirLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform float shadowPenumbra;
 
-float map(vec3 pos) {
-	float sphere1 = sdSphere(pos, vec3(0.0f, 0.0f, 0.0f), 1.0f);
-	float sphere2 = sdSphere(pos, vec3(0.0f, 1.5f + sin(elapsedTime), 0.0f), 1.5f);
-	float sphere3 = sdSphere(pos, vec3(0.0f, 1.5f, 1.0f), 1.0f);
-    float plane = sdPlane(pos, vec3(0.0f, -1.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 1.0f);
-    return opUnion(opUnion(opSmoothUnion(sphere1, sphere2, 1.0f), sphere3), plane);
+ObjectData map(vec3 pos) {
+	ObjectData sphere1 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, 0.0f), 1.0f), materials[0]);
+    ObjectData sphere2 = ObjectData(sdSphere(pos, vec3(0.0f, 1.5f + sin(elapsedTime), 0.0f), 1.5f), materials[1]);
+    return opSmoothIntersection(sphere2, sphere1, 0.2);
 }
 
 Ray generateRay(vec3 ori,vec3 dir)
@@ -45,10 +44,10 @@ vec3 calcNormal(vec3 p)
 {
     const float h = 0.0001;
     const vec2 k = vec2(1,-1);
-    return normalize( k.xyy * map(p + k.xyy * h) + 
-                      k.yyx * map(p + k.yyx * h) + 
-                      k.yxy * map(p + k.yxy * h) + 
-                      k.xxx * map(p + k.xxx * h));
+    return normalize( k.xyy * map(p + k.xyy * h).d + 
+                      k.yyx * map(p + k.yyx * h).d + 
+                      k.yxy * map(p + k.yxy * h).d + 
+                      k.xxx * map(p + k.xxx * h).d);
 }
 
 float calcAO(vec3 pos, vec3 normal)
@@ -57,7 +56,7 @@ float calcAO(vec3 pos, vec3 normal)
     float d = 0.001f;
     for(int i = 0; i<= aoIterations; i++){
         d += aoStepSize;
-        ao += max(0.0f, (d - map(pos + d * normal)) / d);
+        ao += max(0.0f, (d - map(pos + d * normal).d) / d);
     }
     return clamp(1.0f - ao * aoIntensity, 0.0, 1.0);
 }
@@ -69,7 +68,7 @@ float shadow(Ray ray, float tMin, float tMmax)
     float t = tMin;
     for (int i = 0; i < MAX_MARCHING_STEPS; i++) {
         if (t > tMmax) break;
-        float h = map(ray.ori + t * ray.dir);
+        float h = map(ray.ori + t * ray.dir).d;
         if (abs(h) < EPSILON) {
             return 0.0f;
         }
@@ -84,7 +83,7 @@ float softShadow(Ray ray, float tMin, float tMmax, float k){
     float t = tMin;
     for (int i = 0; i < MAX_MARCHING_STEPS; i++) {
         if (t > tMmax) break;
-        float h = map(ray.ori + t * ray.dir);
+        float h = map(ray.ori + t * ray.dir).d;
         if (abs(h) < EPSILON) {
             return 0.0f;
         }
@@ -139,21 +138,24 @@ vec3 calcPointLight(vec3 p, Material mat, PointLight light, vec3 normal, vec3 fr
 }
 
 
-vec3 shade(vec3 hitPosition, vec3 normal, vec3 viewDir) {
-	vec3 result = calcDirLight(hitPosition, mat, dirLight, normal, viewDir);
+vec3 shade(vec3 hitPosition, vec3 normal, vec3 viewDir, Material material) {
+	vec3 result = calcDirLight(hitPosition, material, dirLight, normal, viewDir);
 	for (int i = 0; i < NR_POINT_LIGHTS; i++) {
-		result += calcPointLight(hitPosition, mat, pointLights[i], normal, hitPosition, viewDir);
+		result += calcPointLight(hitPosition, material, pointLights[i], normal, hitPosition, viewDir);
 	}
     return result;
 }
 
 
-bool rayMarch(Ray ray, out vec3 p){
+bool rayMarch(Ray ray, out vec3 p, out Material material){
     float t = 0.0f;
     for (int i = 0; i < MAX_MARCHING_STEPS; i++) {
         if (t > MAX_DISTANCE) return false;
         p = ray.ori + t * ray.dir;
-        float d = map(p);
+        ObjectData OData;
+        OData = map(p);
+        float d = OData.d;
+        material = OData.mat;
         if (abs(d) < EPSILON) {
             return true;
         }
@@ -166,11 +168,12 @@ void main()
 {
     Ray ray = generateRay(cameraPos, normalize(rayDir));
 	vec3 hitPosition;
-	bool hit = rayMarch(ray, hitPosition);
+    Material material;
+	bool hit = rayMarch(ray, hitPosition,  material);
 	if (hit) {
 		vec3 normal = calcNormal(hitPosition);
 		vec3 viewDir = normalize(cameraPos - hitPosition);
-        FragColor = vec4(shade(hitPosition, normal, viewDir), 1);
+        FragColor = vec4(shade(hitPosition, normal, viewDir, material), 1);
     }
 	else{
 		FragColor = vec4(0.0f);

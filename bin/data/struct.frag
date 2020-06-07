@@ -11,6 +11,11 @@ struct Material {
 	float shininess;
 }; 
 
+struct ObjectData {
+    float d;
+    Material mat;
+}; 
+
 struct DirLight {
     vec3 direction;
     vec3 color;

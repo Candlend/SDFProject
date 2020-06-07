@@ -111,10 +111,14 @@ void ofApp::update() {
 void ofApp::draw() {
 	cam.begin();
 	raymarchShader.begin();
-	raymarchShader.setUniform3f("mat.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-	raymarchShader.setUniform3f("mat.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
-	raymarchShader.setUniform3f("mat.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-	raymarchShader.setUniform1f("mat.shininess", 64.0f);
+	raymarchShader.setUniform3f("materials[0].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+	raymarchShader.setUniform3f("materials[0].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+	raymarchShader.setUniform3f("materials[0].specular", glm::vec3(0.8f, 0.8f, 0.8f));
+	raymarchShader.setUniform1f("materials[0].shininess", 64.0f);
+	raymarchShader.setUniform3f("materials[1].ambient", glm::vec3(0.2f, 0.0f, 0.0f));
+	raymarchShader.setUniform3f("materials[1].diffuse", glm::vec3(0.8f, 0.0f, 0.0f));
+	raymarchShader.setUniform3f("materials[1].specular", glm::vec3(0.8f, 0.0f, 0.0f));
+	raymarchShader.setUniform1f("materials[1].shininess", 16.0f);
 	raymarchShader.setUniformMatrix4f("camFrustum", camFrustum);
 	raymarchShader.setUniformMatrix4f("camToWorld", camToWorld);
 	raymarchShader.setUniform3f("cameraPos", cameraPos);

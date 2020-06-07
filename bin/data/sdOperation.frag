@@ -1,37 +1,85 @@
-float opUnion(float d1, float d2)
+ObjectData opUnion(ObjectData d1, ObjectData d2)
 {
-	return min(d1, d2); 
+	if (d1.d < d2.d)
+	{
+		return d1;
+	}
+	else
+	{
+		return d2;
+	}
 }
 
-float opSubtraction(float d1, float d2)
+ObjectData opSubtraction(ObjectData d1, ObjectData d2)
 {
-	return max(-d1, d2); 
+	if (-d1.d > d2.d)
+	{
+		return d1;
+	}
+	else
+	{
+		return d2;
+	}
 }
 
-float opIntersection(float d1, float d2)
+ObjectData opIntersection(ObjectData d1, ObjectData d2)
 {
-	return max(d1, d2); 
+	if (d1.d > d2.d)
+	{
+		return d1;
+	}
+	else
+	{
+		return d2;
+	}
 }
 
-float opSmoothUnion(float d1, float d2, float k)
+ObjectData opSmoothUnion(ObjectData d1, ObjectData d2, float k)
 {
-    float h = clamp(0.5 + 0.5 * (d2 - d1) / k, 0.0, 1.0);
-    return mix(d2, d1, h) - k * h * (1.0 - h);
+	Material newMat;
+	ObjectData newObjData;
+    float h = clamp(0.5 + 0.5 * (d2.d - d1.d) / k, 0.0, 1.0);
+
+	newMat.ambient = mix(d2.mat.ambient, d1.mat.ambient, h);
+	newMat.diffuse = mix(d2.mat.diffuse, d1.mat.diffuse, h);
+	newMat.specular = mix(d2.mat.specular, d1.mat.specular, h);
+	newMat.shininess = mix(d2.mat.shininess, d1.mat.shininess, h);
+
+	newObjData.d = mix(d2.d, d1.d, h) - k * h * (1.0 - h);
+	newObjData.mat = newMat;
+    return newObjData;
 }
 
-<<<<<<< HEAD
-float opSmoothSubtraction( float d1, float d2, float k ) 
+ObjectData opSmoothSubtraction( ObjectData d1, ObjectData d2, float k ) 
 {
-    float h = clamp( 0.5 - 0.5*(d2+d1)/k, 0.0, 1.0 );
-    return mix( d2, -d1, h ) + k*h*(1.0-h); 
+	Material newMat;
+	ObjectData newObjData;
+    float h = clamp( 0.5 - 0.5*(d2.d + d1.d )/k, 0.0, 1.0 );
+
+	newMat = d2.mat;
+
+	newObjData.d = mix(d2.d, -d1.d, h) + k * h * (1.0 - h);
+	newObjData.mat = newMat;
+    return newObjData;
+
 }
 
-float opSmoothIntersection( float d1, float d2, float k ) 
+ObjectData opSmoothIntersection( ObjectData d1, ObjectData d2, float k ) 
 {
-    float h = clamp( 0.5 - 0.5*(d2-d1)/k, 0.0, 1.0 );
-    return mix( d2, d1, h ) + k*h*(1.0-h); 
+	Material newMat;
+	ObjectData newObjData;
+    float h = clamp( 0.5 - 0.5*(d2.d-d1.d)/k, 0.0, 1.0 );
+
+	newMat.ambient = mix(d2.mat.ambient, d1.mat.ambient, h);
+	newMat.diffuse = mix(d2.mat.diffuse, d1.mat.diffuse, h);
+	newMat.specular = mix(d2.mat.specular, d1.mat.specular, h);
+	newMat.shininess = mix(d2.mat.shininess, d1.mat.shininess, h);
+
+	newObjData.d = mix(d2.d, d1.d, h) + k * h * (1.0 - h);
+	newObjData.mat = newMat;
+    return newObjData;
 }
-=======
+
 vec3 opBend(vec3 p, float strength)
 {
 	float c = cos(strength * p.x);
@@ -66,4 +114,3 @@ float opExtrusion(vec3 p, float primitive, float h)
 	vec2 w = vec2(primitive, abs(p.z-h));
 	return min(max(w.x,w.y), 0.0) + length(max(w, 0.0));
 }
->>>>>>> 30ec0164ed2baf9832b7a2bb4a7ba87c88957db5
