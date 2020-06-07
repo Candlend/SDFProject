@@ -1,4 +1,23 @@
 <?xml version="1.0"?>
 <Settings>
-	<Shadow_Penumbra>54.955</Shadow_Penumbra>
+	<Shadow_Penumbra>16</Shadow_Penumbra>
+  <AO_Step_Size>0.05</AO_Step_Size>
+  <AO_Iterations>20</AO_Iterations>
+  <AO_Intensity>0.1</AO_Intensity>
+	<Directional_Light>
+		<Direction>-1, -1, -1</Direction>
+		<Color>0.368686, 0.361992, 0.375, 1</Color>
+	</Directional_Light>
+	<Point_Light_0>
+		<Position>-3.08205, 4.20659, 3.16535</Position>
+		<Color>1, 0, 0.0190959, 1</Color>
+	</Point_Light_0>
+	<Point_Light_1>
+		<Position>4.20659, 4.72721, 0.260308</Position>
+		<Color>0, 1, 0.951072, 1</Color>
+	</Point_Light_1>
+	<Point_Light_2>
+		<Position>2.12411, 1.08289, -2.04082</Position>
+		<Color>0.4927, 0.5, 0, 1</Color>
+	</Point_Light_2>
 </Settings>

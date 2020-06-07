@@ -3,7 +3,7 @@
 #define EPSILON 0.0001
 #define MAX_MARCHING_STEPS 1000
 #define MAX_DISTANCE 1000
-#define NR_POINT_LIGHTS 1
+#define NR_POINT_LIGHTS 3
 
 #pragma include "struct.frag"
 #pragma include "sdPrimitive.frag"
@@ -13,6 +13,10 @@ out vec4 FragColor;
 
 in vec2 texCoords;
 in vec3 rayDir;
+
+uniform float aoStepSize;
+uniform int aoIterations;
+uniform float aoIntensity;
 
 uniform vec3 cameraPos;
 uniform Material mat;
@@ -48,16 +52,13 @@ vec3 calcNormal(vec3 p)
 
 float calcAO(vec3 pos, vec3 normal)
 {
-	float occ = 0.0;
-    float sca = 1.0;
-    for (int i = 0; i < 20; i++)
-    {
-        float h = 0.001 + 0.15 * float(i) / 4.0;
-        float d = map(pos + h * normal);
-        occ += (h - d) * sca;
-        sca *= 0.95;
+    float ao = 0.0f;
+    float d = 0.001f;
+    for(int i = 0; i<= aoIterations; i++){
+        d += aoStepSize;
+        ao += max(0.0f, (d - map(pos + d * normal)) / d);
     }
-    return clamp(1.0 - 0.5 * occ, 0.0, 1.0);    
+    return clamp(1.0f - ao * aoIntensity, 0.0, 1.0);
 }
 
 
@@ -66,7 +67,7 @@ float shadow(Ray ray, float tMin, float tMmax)
     float result = 1.0f;
     float t = tMin;
     for (int i = 0; i < MAX_MARCHING_STEPS; i++) {
-        if (t > MAX_DISTANCE) break;
+        if (t > tMmax) break;
         float h = map(ray.ori + t * ray.dir);
         if (abs(h) < EPSILON) {
             return 0.0f;
@@ -81,7 +82,7 @@ float softShadow(Ray ray, float tMin, float tMmax, float k){
     float ph = 1e20;
     float t = tMin;
     for (int i = 0; i < MAX_MARCHING_STEPS; i++) {
-        if (t > MAX_DISTANCE) break;
+        if (t > tMmax) break;
         float h = map(ray.ori + t * ray.dir);
         if (abs(h) < EPSILON) {
             return 0.0f;
