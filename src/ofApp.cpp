@@ -56,6 +56,22 @@ static glm::mat4 GetCamToWorld(ofCamera cam, bool vFlip = true)
 	return glm::inverse(MVmatrix);
 }
 
+void ofApp::setupGUI() {
+	parameters.setName("Settings");
+	parameters.add(shadowPenumbra.set("Shadow Penumbra", 16.0f, 1.0f, 100.0f));
+	parameters.add(aoStepSize.set("AO Step Size", 0.05f, 0.001f, 0.1f));
+	parameters.add(aoIterations.set("AO Iterations", 20, 0, 100));
+	parameters.add(aoIntensity.set("AO Intensity", 0.1f, 0.0f, 1.0f));
+	dirLight.setup("Directional Light");
+	parameters.add(dirLight.parameters);
+	for (int i = 0; i < NR_POINT_LIGHTS; i++) {
+		parameters.add(pointLights[i].parameters);
+		pointLights[i].setup("Point Light " + std::to_string(i));
+	}
+	gui.setup(parameters);
+	gui.loadFromFile("settings.xml");
+}
+
 //--------------------------------------------------------------
 void ofApp::setup() {
 	raymarchShader.load("raymarch.vert", "raymarch.frag");
@@ -70,30 +86,13 @@ void ofApp::setup() {
 	viewport = ofGetCurrentRenderer()->getCurrentViewport();
 	cam.setAspectRatio(viewport.width / viewport.height);
 
-	ofEnableDepthTest();
 	model = glm::mat4(1.0);
 	view = cam.getModelViewMatrix();
 	projection = cam.getProjectionMatrix();
 
 	quad = GetQuad();
 
-	raymarchShader.begin();
-	raymarchShader.setUniform3f("mat.ambient", glm::vec3(0.5f, 0.5f, 0.5f));
-	raymarchShader.setUniform3f("mat.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-	raymarchShader.setUniform3f("mat.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-	raymarchShader.setUniform1f("mat.shininess", 64.0f);
-	raymarchShader.setUniform3f("dirLight.direction", glm::vec3(-1.0f, -1.0f, -1.0f));
-	raymarchShader.setUniform3f("dirLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-	raymarchShader.setUniform3f("dirLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
-	raymarchShader.setUniform3f("dirLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-	raymarchShader.setUniform3f("pointLights[0].position", glm::vec3(-5.7f,  5.2f,  -2.0f));
-	raymarchShader.setUniform3f("pointLights[0].ambient", 0.05f, 0.0f, 0.0f);
-	raymarchShader.setUniform3f("pointLights[0].diffuse", 0.8f, 0.0f, 0.0f);
-	raymarchShader.setUniform3f("pointLights[0].specular", 1.0f, 0.0f, 0.0f);
-	raymarchShader.setUniform1f("pointLights[0].constant", 1.0f);
-	raymarchShader.setUniform1f("pointLights[0].linear", 0.09);
-	raymarchShader.setUniform1f("pointLights[0].quadratic", 0.032);
-	phongShader.end();
+	setupGUI();
 }
 
 //--------------------------------------------------------------
@@ -105,28 +104,34 @@ void ofApp::update() {
 	camFrustum = GetCamFrustum(cam);
 	camToWorld = GetCamToWorld(cam);
 	cameraPos = cam.getGlobalPosition();
+	elapsedTime = ofGetElapsedTimef();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
 	cam.begin();
 	raymarchShader.begin();
-
-
+	raymarchShader.setUniform3f("mat.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+	raymarchShader.setUniform3f("mat.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
+	raymarchShader.setUniform3f("mat.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+	raymarchShader.setUniform1f("mat.shininess", 64.0f);
 	raymarchShader.setUniformMatrix4f("camFrustum", camFrustum);
 	raymarchShader.setUniformMatrix4f("camToWorld", camToWorld);
 	raymarchShader.setUniform3f("cameraPos", cameraPos);
-	raymarchShader.setUniform1f("shadowPenumbra", 16.0f);
+	raymarchShader.setUniform1f("shadowPenumbra", shadowPenumbra);
+	raymarchShader.setUniform1f("aoStepSize", aoStepSize);
+	raymarchShader.setUniform1i("aoIterations", aoIterations);
+	raymarchShader.setUniform1f("aoIntensity", aoIntensity);
+	raymarchShader.setUniform1f("elapsedTime", elapsedTime);
+	dirLight.setUniform(raymarchShader);
+	for (int i = 0; i < NR_POINT_LIGHTS; i++) {
+		pointLights[i].setUniform(raymarchShader, "pointLights[" + std::to_string(i) + "]");
+	}
 	quad.draw();
-
 	raymarchShader.end();
-	phongShader.begin();
-	phongShader.setUniformMatrix4f("model", model);
-	phongShader.setUniformMatrix4f("view", view);
-	phongShader.setUniformMatrix4f("projection", projection);
-	//ofDrawSphere(1);
-	phongShader.end();
 	cam.end();
+	gui.draw();
+
 }
 
 //--------------------------------------------------------------
