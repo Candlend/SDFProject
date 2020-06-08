@@ -25,30 +25,35 @@ ObjectData scene0(vec3 pos){
 
     // return temp;
 
+	float c = cos(elapsedTime);
+	float s = sin(elapsedTime);
+	mat4 m1 = mat4(c, s, 0, 0, -s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+	mat4 m2 = mat4(1, 0, 0, 0, 0, c, -s, 0, 0, s, c, 0, 0, 0, 0, 1);
+	vec3 q = opTransform(pos, m1 * m2);
 
-	ObjectData cube0 = ObjectData(sdCube(pos, vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f)), materials[2]);
-	ObjectData sphere0 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, 0.0f), 1.4f), materials[2]);
-	ObjectData sphere1 = ObjectData(sdSphere(pos, vec3(0.0f, -1.2f, 0.0f), 0.4f), materials[1]);
-	ObjectData sphere2 = ObjectData(sdSphere(pos, vec3(-1.1f, 0.4f, -0.4f), 0.2f), materials[0]);
-	ObjectData sphere3 = ObjectData(sdSphere(pos, vec3(-1.1f, -0.4f, 0.4f), 0.2f), materials[0]);
-	ObjectData sphere4 = ObjectData(sdSphere(pos, vec3(-0.4f, -0.4f, -1.1f), 0.2f), materials[0]);
-	ObjectData sphere5 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, -1.1f), 0.2f), materials[0]);
-	ObjectData sphere6 = ObjectData(sdSphere(pos, vec3(0.4f, 0.4f, -1.1f), 0.2f), materials[0]);
-	ObjectData sphere7 = ObjectData(sdSphere(pos, vec3(0.4f, -0.4f, 1.1f), 0.2f), materials[1]);
-	ObjectData sphere8 = ObjectData(sdSphere(pos, vec3(-0.4f, -0.4f, 1.1f), 0.2f), materials[1]);
-	ObjectData sphere9 = ObjectData(sdSphere(pos, vec3(-0.4f, 0.4f, 1.1f), 0.2f), materials[1]);
-	ObjectData sphere10 = ObjectData(sdSphere(pos, vec3(0.4f, 0.4f, 1.1f), 0.2f), materials[1]);
-	ObjectData sphere11 = ObjectData(sdSphere(pos, vec3(1.1f, -0.4f, 0.4f), 0.2f), materials[0]);
-	ObjectData sphere12 = ObjectData(sdSphere(pos, vec3(1.1f, 0.4f, 0.4f), 0.2f), materials[0]);
-	ObjectData sphere13 = ObjectData(sdSphere(pos, vec3(1.1f, 0.4f, -0.4f), 0.2f), materials[0]);
-	ObjectData sphere14 = ObjectData(sdSphere(pos, vec3(1.1f, -0.4f, -0.4f), 0.2f), materials[0]);
-	ObjectData sphere15 = ObjectData(sdSphere(pos, vec3(1.1f, 0.0f, 0.0f), 0.2f), materials[0]);
-	ObjectData sphere16 = ObjectData(sdSphere(pos, vec3(0.6f, 1.1f, 0.4f), 0.2f), materials[0]);
-	ObjectData sphere17 = ObjectData(sdSphere(pos, vec3(-0.6f, 1.1f, 0.4f), 0.2f), materials[0]);
-	ObjectData sphere18 = ObjectData(sdSphere(pos, vec3(-0.6f, 1.1f, -0.4f), 0.2f), materials[0]);
-	ObjectData sphere19 = ObjectData(sdSphere(pos, vec3(0.6f, 1.1f, -0.4f), 0.2f), materials[0]);
-	ObjectData sphere20 = ObjectData(sdSphere(pos, vec3(0.0f, 1.1f, 0.4f), 0.2f), materials[0]);
-	ObjectData sphere21 = ObjectData(sdSphere(pos, vec3(0.0f, 1.1f, -0.4f), 0.2f), materials[0]);
+	ObjectData cube0 = ObjectData(sdCube(q, vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f)), materials[2]);
+	ObjectData sphere0 = ObjectData(sdSphere(q, vec3(0.0f, 0.0f, 0.0f), 1.4f), materials[2]);
+	ObjectData sphere1 = ObjectData(sdSphere(q, vec3(0.0f, -1.2f, 0.0f), 0.4f), materials[1]);
+	ObjectData sphere2 = ObjectData(sdSphere(q, vec3(-1.1f, 0.4f, -0.4f), 0.2f), materials[0]);
+	ObjectData sphere3 = ObjectData(sdSphere(q, vec3(-1.1f, -0.4f, 0.4f), 0.2f), materials[0]);
+	ObjectData sphere4 = ObjectData(sdSphere(q, vec3(-0.4f, -0.4f, -1.1f), 0.2f), materials[0]);
+	ObjectData sphere5 = ObjectData(sdSphere(q, vec3(0.0f, 0.0f, -1.1f), 0.2f), materials[0]);
+	ObjectData sphere6 = ObjectData(sdSphere(q, vec3(0.4f, 0.4f, -1.1f), 0.2f), materials[0]);
+	ObjectData sphere7 = ObjectData(sdSphere(q, vec3(0.4f, -0.4f, 1.1f), 0.2f), materials[1]);
+	ObjectData sphere8 = ObjectData(sdSphere(q, vec3(-0.4f, -0.4f, 1.1f), 0.2f), materials[1]);
+	ObjectData sphere9 = ObjectData(sdSphere(q, vec3(-0.4f, 0.4f, 1.1f), 0.2f), materials[1]);
+	ObjectData sphere10 = ObjectData(sdSphere(q, vec3(0.4f, 0.4f, 1.1f), 0.2f), materials[1]);
+	ObjectData sphere11 = ObjectData(sdSphere(q, vec3(1.1f, -0.4f, 0.4f), 0.2f), materials[0]);
+	ObjectData sphere12 = ObjectData(sdSphere(q, vec3(1.1f, 0.4f, 0.4f), 0.2f), materials[0]);
+	ObjectData sphere13 = ObjectData(sdSphere(q, vec3(1.1f, 0.4f, -0.4f), 0.2f), materials[0]);
+	ObjectData sphere14 = ObjectData(sdSphere(q, vec3(1.1f, -0.4f, -0.4f), 0.2f), materials[0]);
+	ObjectData sphere15 = ObjectData(sdSphere(q, vec3(1.1f, 0.0f, 0.0f), 0.2f), materials[0]);
+	ObjectData sphere16 = ObjectData(sdSphere(q, vec3(0.6f, 1.1f, 0.4f), 0.2f), materials[0]);
+	ObjectData sphere17 = ObjectData(sdSphere(q, vec3(-0.6f, 1.1f, 0.4f), 0.2f), materials[0]);
+	ObjectData sphere18 = ObjectData(sdSphere(q, vec3(-0.6f, 1.1f, -0.4f), 0.2f), materials[0]);
+	ObjectData sphere19 = ObjectData(sdSphere(q, vec3(0.6f, 1.1f, -0.4f), 0.2f), materials[0]);
+	ObjectData sphere20 = ObjectData(sdSphere(q, vec3(0.0f, 1.1f, 0.4f), 0.2f), materials[0]);
+	ObjectData sphere21 = ObjectData(sdSphere(q, vec3(0.0f, 1.1f, -0.4f), 0.2f), materials[0]);
 	
 	ObjectData face1 = sphere1;
 	ObjectData face2 = opUnion(sphere2, sphere3);
@@ -64,9 +69,30 @@ ObjectData scene0(vec3 pos){
 }
 
 ObjectData scene1(vec3 pos){
-    ObjectData sphere1 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, 0.0f), 1.0f), materials[0]);
-    ObjectData sphere2 = ObjectData(sdSphere(pos, vec3(0.0f, 1.5f + sin(elapsedTime), 0.0f), 1.5f), materials[1]);
-    return opSmoothIntersection(sphere2, sphere1, 0.2);
+	float c = cos(elapsedTime);
+	float s = sin(elapsedTime);
+	mat4 trans = mat4(c, s, 0, 0, -s, c, 0, 0, 0,0,1,0 ,0,0,0,1);
+
+	trans = trans * mat4(1,0 ,0,0,0,c, -s, 0,0,s,c,0,0,0,0,1);
+    ObjectData jelly = ObjectData(sdRoundCube(opBend(pos - vec3(3, 0, 0), deformStrength * s), vec3(3, 0, 3), vec3(2, 1, 1), 0.5), materials[0]);
+	
+    ObjectData plane = ObjectData(sdPlane(pos, vec3(0.0f, -2.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 1.0f), materials[0]);
+
+	ObjectData cross3d = opRound(
+		ObjectData(
+			opExtrusion(
+				pos - vec3(-5, 0, 0), 
+				sd2DCross(
+					(pos - vec3(-5, 0, 0)).xy,
+					vec2(1.0, 0.25),
+					0.2), 
+				5 * deformStrength * s + 5 * deformStrength),
+			materials[0]),
+		deformStrength * 0.1);
+
+	ObjectData cylinder = ObjectData(sdCylinder(opTransform(pos, trans), vec3(0,0,0), 0.5, 2.0), materials[0]);
+
+	return opSmoothUnion(opUnion(opUnion(jelly, cylinder), cross3d), plane, smoothness);
 }
 
 ObjectData scene2(vec3 pos){
