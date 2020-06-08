@@ -2,7 +2,7 @@
 
 #define EPSILON 0.0001
 #define MAX_MARCHING_STEPS 1000
-#define MAX_DISTANCE 1000
+#define MAX_DISTANCE 100
 #define NR_POINT_LIGHTS 3
 #define NR_MATERIALS 3
 
@@ -15,20 +15,25 @@ out vec4 FragColor;
 in vec2 texCoords;
 in vec3 rayDir;
 
+uniform int sceneIndex;
+uniform float elapsedTime;
+uniform float stepScale;
+uniform float deformStrength;
+uniform float smoothness;
+
+uniform float shadowPenumbra;
+uniform bool useSoftShadow;
+uniform bool shadowImprovement;
+
+
 uniform float aoStepSize;
 uniform int aoIterations;
-uniform int sceneIndex;
 uniform float aoIntensity;
 
-uniform float stepScale;
-uniform float smoothness;
-uniform float deformStrength;
-uniform float elapsedTime;
 uniform vec3 cameraPos;
 uniform Material materials[NR_MATERIALS];
 uniform DirLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
-uniform float shadowPenumbra;
 
 #pragma include "scene.frag"
 ObjectData map(vec3 pos) {
@@ -73,7 +78,7 @@ float calcAO(vec3 pos, vec3 normal)
 }
 
 
-float shadow(Ray ray, float tMin, float tMax)
+float hardShadow(Ray ray, float tMin, float tMax)
 {
     float result = 1.0f;
     float t = tMin;
@@ -98,11 +103,17 @@ float softShadow(Ray ray, float tMin, float tMax, float k){
         if (abs(h) < EPSILON) {
             return 0.0f;
         }
-        float y = h * h / (2.0 * ph);
-        float d = sqrt(h * h - y * y);
-        result = min(result, k * d / max(0.0, t - y));
-        ph = h;
-        t += h * stepScale;
+		if (shadowImprovement){
+			float y = h * h / (2.0 * ph);
+			float d = sqrt(h * h - y * y);
+			result = min(result, k * d / max(0.0, t - y));		
+			ph = h;
+			t += h;
+		}
+		else {
+			result = min(result, k * h / t);
+			t += h * stepScale;
+		}
     }
     return result;
 }
@@ -121,7 +132,13 @@ vec3 calcDirLight(vec3 p, Material mat, DirLight light, vec3 normal, vec3 viewDi
 		specular = mat.specular * light.color * pow(max(dot(R, viewDir), 0.0), mat.shininess);
 	}
     Ray shadowRay = generateRay(p + 0.01 * normal, L);
-    float shadow = softShadow(shadowRay, 0.0, MAX_DISTANCE, shadowPenumbra);
+    float shadow;
+	if (useSoftShadow){
+		shadow = softShadow(shadowRay, 0.0, MAX_DISTANCE, shadowPenumbra);
+	}
+	else {
+		shadow = hardShadow(shadowRay, 0.0, MAX_DISTANCE);
+	}
 	float ao = calcAO(p, normal);
     return ambient * ao + (diffuse + specular) * shadow;
 }
@@ -149,7 +166,13 @@ vec3 calcPointLight(vec3 p, Material mat, PointLight light, vec3 normal, vec3 fr
 	diffuse  *= attenuation;
 	specular *= attenuation;
     Ray shadowRay = generateRay(p + 0.01 * normal, L);
-    float shadow = softShadow(shadowRay, 0.0, distance, shadowPenumbra);
+    float shadow;
+	if (useSoftShadow){
+		shadow = softShadow(shadowRay, 0.0, distance, shadowPenumbra);
+	}
+	else {
+		shadow = hardShadow(shadowRay, 0.0, distance);
+	}
 	float ao = calcAO(p, normal);
     return ambient * ao + (diffuse + specular) * shadow;
 }

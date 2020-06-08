@@ -34,6 +34,8 @@ public:
 	ofTrueTypeFont font;
 	ofParameterGroup parameters;
 	ofParameter<float> shadowPenumbra;
+	ofParameter<bool> useSoftShadow;
+	ofParameter<bool> shadowImprovement;
 	ofParameter<float> aoStepSize;
 	ofParameter<int> sceneIndex;
 	ofParameter<int> aoIterations;

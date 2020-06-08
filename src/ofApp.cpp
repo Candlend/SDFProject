@@ -59,13 +59,22 @@ static glm::mat4 GetCamToWorld(ofCamera cam, bool vFlip = true)
 void ofApp::setupGUI() {
 	parameters.setName("Settings");
 	parameters.add(sceneIndex.set("Scene Index", 0, 0, 2));
-	parameters.add(aoIterations.set("AO Iterations", 20, 0, 100));
-	parameters.add(shadowPenumbra.set("Shadow Penumbra", 16.0f, 1.0f, 100.0f));
-	parameters.add(aoStepSize.set("AO Step Size", 0.05f, 0.001f, 0.1f));
-	parameters.add(aoIntensity.set("AO Intensity", 0.1f, 0.0f, 1.0f));
 	parameters.add(stepScale.set("Step Scale", 0.5f, 0.0f, 1.0f));
 	parameters.add(smoothness.set("Smoothness", 0.5f, 0.0f, 1.0f));
 	parameters.add(deformStrength.set("Deformation Strength", 0.1f, 0.0f, 1.0f));
+
+	ofParameterGroup shadowGroup("Shadow");
+	shadowGroup.add(useSoftShadow.set("Use Soft Shadow", true, false, true));
+	shadowGroup.add(shadowImprovement.set("Shadow Improvement", false, false, true));
+	shadowGroup.add(shadowPenumbra.set("Shadow Penumbra", 16.0f, 1.0f, 100.0f));
+	parameters.add(shadowGroup);
+
+	ofParameterGroup aoGroup("Ambient Occlusion");
+	aoGroup.add(aoIterations.set("AO Iterations", 20, 0, 100));
+	aoGroup.add(aoStepSize.set("AO Step Size", 0.05f, 0.001f, 0.1f));
+	aoGroup.add(aoIntensity.set("AO Intensity", 0.1f, 0.0f, 1.0f));
+	parameters.add(aoGroup);
+
 	ofParameterGroup lightGroup("Lights");
 	dirLight.setup("Directional Light");
 	lightGroup.add(dirLight.parameters);
@@ -83,6 +92,8 @@ void ofApp::setupGUI() {
 
 	gui.setup(parameters);
 	gui.loadFromFile("settings.xml");
+	font.load(OF_TTF_SANS, 9, true, true);
+	ofEnableAlphaBlending();
 }
 
 //--------------------------------------------------------------
@@ -135,15 +146,18 @@ void ofApp::draw() {
 	raymarchShader.setUniformMatrix4f("camFrustum", camFrustum);
 	raymarchShader.setUniformMatrix4f("camToWorld", camToWorld);
 	raymarchShader.setUniform3f("cameraPos", cameraPos);
-	raymarchShader.setUniform1f("shadowPenumbra", shadowPenumbra);
-	raymarchShader.setUniform1f("aoStepSize", aoStepSize);
-	raymarchShader.setUniform1i("aoIterations", aoIterations);
-	raymarchShader.setUniform1i("sceneIndex", sceneIndex);
-	raymarchShader.setUniform1f("aoIntensity", aoIntensity);
 	raymarchShader.setUniform1f("elapsedTime", elapsedTime);
+	raymarchShader.setUniform1i("sceneIndex", sceneIndex);
 	raymarchShader.setUniform1f("stepScale", stepScale);
 	raymarchShader.setUniform1f("smoothness", smoothness);
 	raymarchShader.setUniform1f("deformStrength", deformStrength);
+
+	raymarchShader.setUniform1f("shadowPenumbra", shadowPenumbra);
+	raymarchShader.setUniform1f("useSoftShadow", useSoftShadow);
+	raymarchShader.setUniform1f("shadowImprovement", shadowImprovement);
+	raymarchShader.setUniform1f("aoStepSize", aoStepSize);
+	raymarchShader.setUniform1i("aoIterations", aoIterations);
+	raymarchShader.setUniform1f("aoIntensity", aoIntensity);
 	dirLight.setUniform(raymarchShader);
 	for (int i = 0; i < NR_POINT_LIGHTS; i++) {
 		pointLights[i].setUniform(raymarchShader, "pointLights[" + std::to_string(i) + "]");
@@ -155,7 +169,7 @@ void ofApp::draw() {
 	raymarchShader.end();
 	cam.end();
 	gui.draw();
-
+	font.drawString("fps: " + ofToString((int)ofGetFrameRate()), ofGetWidth() - 50, 20);
 }
 
 //--------------------------------------------------------------
