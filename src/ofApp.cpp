@@ -58,7 +58,7 @@ static glm::mat4 GetCamToWorld(ofCamera cam, bool vFlip = true)
 
 void ofApp::setupGUI() {
 	parameters.setName("Settings");
-	parameters.add(sceneIndex.set("Scene Index", 0, 0, 2));
+	parameters.add(sceneIndex.set("Scene Index", 0, 0, 3));
 	parameters.add(stepScale.set("Step Scale", 0.5f, 0.0f, 1.0f));
 	parameters.add(smoothness.set("Smoothness", 0.5f, 0.0f, 1.0f));
 	parameters.add(deformStrength.set("Deformation Strength", 0.1f, 0.0f, 1.0f));
