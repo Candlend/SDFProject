@@ -56,7 +56,10 @@ ObjectData opSmoothSubtraction( ObjectData d1, ObjectData d2, float k )
 	ObjectData newObjData;
     float h = clamp( 0.5 - 0.5*(d2.d + d1.d )/k, 0.0, 1.0 );
 
-	newMat = d2.mat;
+	newMat.ambient = mix(d2.mat.ambient, d1.mat.ambient, h);
+	newMat.diffuse = mix(d2.mat.diffuse, d1.mat.diffuse, h);
+	newMat.specular = mix(d2.mat.specular, d1.mat.specular, h);
+	newMat.shininess = mix(d2.mat.shininess, d1.mat.shininess, h);
 
 	newObjData.d = mix(d2.d, -d1.d, h) + k * h * (1.0 - h);
 	newObjData.mat = newMat;
