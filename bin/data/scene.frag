@@ -43,9 +43,30 @@ ObjectData scene0(vec3 pos){
 }
 
 ObjectData scene1(vec3 pos){
-    ObjectData sphere1 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, 0.0f), 1.0f), materials[0]);
-    ObjectData sphere2 = ObjectData(sdSphere(pos, vec3(0.0f, 1.5f + sin(elapsedTime), 0.0f), 1.5f), materials[1]);
-    return opSmoothIntersection(sphere2, sphere1, 0.2);
+	float c = cos(elapsedTime);
+	float s = sin(elapsedTime);
+	mat4 trans = mat4(c, s, 0, 0, -s, c, 0, 0, 0,0,1,0 ,0,0,0,1);
+
+	trans = trans * mat4(1,0 ,0,0,0,c, -s, 0,0,s,c,0,0,0,0,1);
+    ObjectData jelly = ObjectData(sdRoundCube(opBend(pos - vec3(3, 0, 0), deformStrength * s), vec3(3, 0, 3), vec3(2, 1, 1), 0.5), materials[0]);
+	
+    ObjectData plane = ObjectData(sdPlane(pos, vec3(0.0f, -2.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 1.0f), materials[0]);
+
+	ObjectData cross3d = opRound(
+		ObjectData(
+			opExtrusion(
+				pos - vec3(-5, 0, 0), 
+				sd2DCross(
+					(pos - vec3(-5, 0, 0)).xy,
+					vec2(1.0, 0.25),
+					0.2), 
+				5 * deformStrength * s + 5 * deformStrength),
+			materials[0]),
+		deformStrength * 0.1);
+
+	ObjectData cylinder = ObjectData(sdCylinder(opTransform(pos, trans), vec3(0,0,0), 0.5, 2.0), materials[0]);
+
+	return opSmoothUnion(opUnion(opUnion(jelly, cylinder), cross3d), plane, smoothness);
 }
 
 ObjectData scene2(vec3 pos){
