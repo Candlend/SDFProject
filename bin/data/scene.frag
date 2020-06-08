@@ -1,30 +1,4 @@
 ObjectData scene0(vec3 pos){
-    // ObjectData sphere0 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, 0.0f), 1.0f), materials[0]);
-
-    // // float sphereDis = 0.8f;
-    // // float sphereR = 0.55f;
-    // // float smoothR = 0.2;
-
-    // float sphereDis = 0.5f;
-    // float sphereR = 0.65f;
-    // float smoothR = 0.1;
-
-    // ObjectData sphere1 = ObjectData(sdSphere(pos, vec3(sphereDis, 0.0f, 0.0f), sphereR),  materials[1]);
-    // ObjectData sphere2 = ObjectData(sdSphere(pos, vec3(0.0f, sphereDis, 0.0f), sphereR),  materials[1]);
-    // ObjectData sphere3 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, sphereDis), sphereR),  materials[1]);
-    // ObjectData sphere4 = ObjectData(sdSphere(pos, vec3(-sphereDis, 0.0f, 0.0f), sphereR), materials[1]);
-    // ObjectData sphere5 = ObjectData(sdSphere(pos, vec3(0.0f, -sphereDis, 0.0f), sphereR), materials[1]);
-    // ObjectData sphere6 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, -sphereDis), sphereR), materials[1]);
-
-    // ObjectData temp = opSmoothSubtraction(sphere1, sphere0, smoothR);
-    // temp = opSmoothSubtraction(sphere2, temp, smoothR);
-    // temp = opSmoothSubtraction(sphere3, temp, smoothR);
-    // temp = opSmoothSubtraction(sphere4, temp, smoothR);
-    // temp = opSmoothSubtraction(sphere5, temp, smoothR);
-    // temp = opSmoothSubtraction(sphere6, temp, smoothR);
-
-    // return temp;
-
 	float c = cos(elapsedTime);
 	float s = sin(elapsedTime);
 	mat4 m1 = mat4(c, s, 0, 0, -s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
@@ -64,11 +38,39 @@ ObjectData scene0(vec3 pos){
 	ObjectData dots = opUnion(opUnion(opUnion(opUnion(opUnion(face1, face2), face3), face4), face5), face6);
 	ObjectData body = opSmoothIntersection(cube0, sphere0, 0.015f);
 	ObjectData dice = opSmoothSubtraction(dots, body, 0.01f);
-    ObjectData plane = ObjectData(sdPlane(pos, vec3(0.0f, -2.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 1.0f), materials[0]);
+    ObjectData plane = ObjectData(sdPlane(pos, vec3(0.0f, -2.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 1.0f), materials[3]);
     return opUnion(dice, plane);
 }
 
 ObjectData scene1(vec3 pos){
+	ObjectData sphere0 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, 0.0f), 1.0f), materials[0]);
+
+    // float sphereDis = 0.8f;
+    // float sphereR = 0.55f;
+    // float smoothR = 0.2;
+
+    float sphereDis = 0.5f;
+    float sphereR = 0.65f;
+    float smoothR = 0.1;
+
+    ObjectData sphere1 = ObjectData(sdSphere(pos, vec3(sphereDis, 0.0f, 0.0f), sphereR),  materials[1]);
+    ObjectData sphere2 = ObjectData(sdSphere(pos, vec3(0.0f, sphereDis, 0.0f), sphereR),  materials[1]);
+    ObjectData sphere3 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, sphereDis), sphereR),  materials[1]);
+    ObjectData sphere4 = ObjectData(sdSphere(pos, vec3(-sphereDis, 0.0f, 0.0f), sphereR), materials[1]);
+    ObjectData sphere5 = ObjectData(sdSphere(pos, vec3(0.0f, -sphereDis, 0.0f), sphereR), materials[1]);
+    ObjectData sphere6 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, -sphereDis), sphereR), materials[1]);
+
+    ObjectData temp = opSmoothSubtraction(sphere1, sphere0, smoothR);
+    temp = opSmoothSubtraction(sphere2, temp, smoothR);
+    temp = opSmoothSubtraction(sphere3, temp, smoothR);
+    temp = opSmoothSubtraction(sphere4, temp, smoothR);
+    temp = opSmoothSubtraction(sphere5, temp, smoothR);
+    temp = opSmoothSubtraction(sphere6, temp, smoothR);
+
+    return temp;
+}
+
+ObjectData scene2(vec3 pos){
 	float c = cos(elapsedTime);
 	float s = sin(elapsedTime);
 	mat4 trans = mat4(c, s, 0, 0, -s, c, 0, 0, 0,0,1,0 ,0,0,0,1);

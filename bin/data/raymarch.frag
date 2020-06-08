@@ -4,7 +4,7 @@
 #define MAX_MARCHING_STEPS 1000
 #define MAX_DISTANCE 100
 #define NR_POINT_LIGHTS 3
-#define NR_MATERIALS 3
+#define NR_MATERIALS 4
 
 #pragma include "struct.frag"
 #pragma include "sdPrimitive.frag"
@@ -35,20 +35,16 @@ uniform Material materials[NR_MATERIALS];
 uniform DirLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 
-// sin(elapsedTime)
-
 
 #pragma include "scene.frag"
 ObjectData map(vec3 pos) {
-	if (sceneIndex == 0){
-		return scene0(pos);
-	}
-	else if (sceneIndex == 1) {
-		return scene1(pos);
-	}
-	else if (sceneIndex == 2) {
-		return scene2(pos);
-	}
+    switch(sceneIndex)
+    {
+        case 0: return scene0(pos);
+        case 1: return scene1(pos);
+        case 2: return scene2(pos);
+        case 3: return scene3(pos);
+    }
 }
 
 Ray generateRay(vec3 ori,vec3 dir)
