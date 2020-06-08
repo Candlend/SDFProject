@@ -195,7 +195,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DirLight.h" />
-    <ClInclude Include="src\LightRenderer.h" />
+    <ClInclude Include="src\PropertyRenderer.h" />
+    <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxBaseGui.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxButton.h" />
@@ -226,6 +227,7 @@
   <ItemGroup>
     <None Include="bin\data\raymarch.frag" />
     <None Include="bin\data\raymarch.vert" />
+    <None Include="bin\data\scene.frag" />
     <None Include="bin\data\sdOperation.frag" />
     <None Include="bin\data\sdPrimitive.frag" />
     <None Include="bin\data\struct.frag" />
