@@ -53,12 +53,12 @@ ObjectData scene1(vec3 pos){
     float sphereR = 0.65f;
     float smoothR = 0.1;
 
-    ObjectData sphere1 = ObjectData(sdSphere(pos, vec3(sphereDis, 0.0f, 0.0f), sphereR),  materials[1]);
-    ObjectData sphere2 = ObjectData(sdSphere(pos, vec3(0.0f, sphereDis, 0.0f), sphereR),  materials[1]);
-    ObjectData sphere3 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, sphereDis), sphereR),  materials[1]);
-    ObjectData sphere4 = ObjectData(sdSphere(pos, vec3(-sphereDis, 0.0f, 0.0f), sphereR), materials[1]);
-    ObjectData sphere5 = ObjectData(sdSphere(pos, vec3(0.0f, -sphereDis, 0.0f), sphereR), materials[1]);
-    ObjectData sphere6 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, -sphereDis), sphereR), materials[1]);
+    ObjectData sphere1 = ObjectData(sdSphere(pos, vec3(sphereDis, 0.0f, 0.0f), sphereR),  materials[2]);
+    ObjectData sphere2 = ObjectData(sdSphere(pos, vec3(0.0f, sphereDis, 0.0f), sphereR),  materials[2]);
+    ObjectData sphere3 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, sphereDis), sphereR),  materials[2]);
+    ObjectData sphere4 = ObjectData(sdSphere(pos, vec3(-sphereDis, 0.0f, 0.0f), sphereR), materials[2]);
+    ObjectData sphere5 = ObjectData(sdSphere(pos, vec3(0.0f, -sphereDis, 0.0f), sphereR), materials[2]);
+    ObjectData sphere6 = ObjectData(sdSphere(pos, vec3(0.0f, 0.0f, -sphereDis), sphereR), materials[2]);
 
     ObjectData temp = opSmoothSubtraction(sphere1, sphere0, smoothR);
     temp = opSmoothSubtraction(sphere2, temp, smoothR);
@@ -81,15 +81,15 @@ ObjectData scene2(vec3 pos){
     ObjectData plane = ObjectData(sdPlane(pos, vec3(0.0f, -2.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 1.0f), materials[0]);
 
 	ObjectData cross3d = opRound(
-		ObjectData(
-			opExtrusion(
-				pos - vec3(-5, 0, 0), 
+		opExtrusion(
+			pos - vec3(-5, 0, 0), 
+			ObjectData(
 				sd2DCross(
 					(pos - vec3(-5, 0, 0)).xy,
 					vec2(1.0, 0.25),
-					0.2), 
-				5 * deformStrength * s + 5 * deformStrength),
-			materials[0]),
+					0.2),
+				materials[0]),
+			5 * deformStrength * s + 5 * deformStrength),
 		deformStrength * 0.1);
 
 	ObjectData cylinder = ObjectData(sdCylinder(opTransform(pos, trans), vec3(0,0,0), 0.5, 2.0), materials[0]);
@@ -97,22 +97,19 @@ ObjectData scene2(vec3 pos){
 	return opSmoothUnion(opUnion(opUnion(jelly, cylinder), cross3d), plane, smoothness);
 }
 
-ObjectData scene2(vec3 pos){
+ObjectData scene3(vec3 pos){
     // float d = 1e10;
     vec3 q;
     
     float an = sin(elapsedTime);
 
-	// q = - vec3(-2.0,0.0,-1.3);
-	// ObjectData sphere0 = ObjectData(sdSphere(pos, q-vec3(0.0,0.5+0.3*an,0.0), 0.55f), materials[0]);
-	// ObjectData sphere1 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1f), materials[1]);
 	ObjectData d;
 	// ObjectData d = opUnion(sphere0, sphere1);
 	{
     // // opUnion
 	q = - vec3(-2.0,0.0,1.0);
-    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[0]);
-    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[1]); 
+    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[1]);
+    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[2]); 
     d = opUnion(d1,d2);
     // d = min( d, dt );
     }
@@ -120,8 +117,8 @@ ObjectData scene2(vec3 pos){
 	{
     // opSmoothUnion
     q = - vec3(-2.0,0.0,-1.3);
-    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[0]);
-    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[1]); 
+    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[1]);
+    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[2]); 
     ObjectData dt = opSmoothUnion(d1,d2, 0.25);
     d = opUnion(d, dt);
 	}
@@ -129,8 +126,8 @@ ObjectData scene2(vec3 pos){
 	{
     // opSubtraction
 	q = - vec3(0.0,0.0,1.0);
-    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[0]);
-    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[1]); 
+    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[1]);
+    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[2]); 
     ObjectData dt = opSubtraction(d1,d2);
     d = opUnion( d, dt );
 	}
@@ -138,8 +135,8 @@ ObjectData scene2(vec3 pos){
 	{
     // opSmoothSubtraction
     q = - vec3(0.0,0.0,-1.3);
-    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[0]);
-    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[1]); 
+    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[1]);
+    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[2]); 
     ObjectData dt = opSmoothSubtraction(d1,d2, 0.25);
     d = opUnion( d, dt );
 	}
@@ -147,8 +144,8 @@ ObjectData scene2(vec3 pos){
 	{
     // opIntersection
 	q = - vec3(2.0,0.0,1.0);
-    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[0]);
-    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[1]); 
+    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[1]);
+    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[2]); 
     ObjectData dt = opIntersection(d1,d2);
     d = opUnion( d, dt );
     }
@@ -156,8 +153,8 @@ ObjectData scene2(vec3 pos){
 	{
     // opSmoothIntersection
 	q = - vec3(2.0,0.0,-1.3);
-    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[0]);
-    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[1]); 
+    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[1]);
+    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[2]); 
     ObjectData dt = opSmoothIntersection(d1,d2, 0.25);
     d = opUnion( d, dt );
 	}	

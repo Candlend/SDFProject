@@ -115,8 +115,8 @@ ObjectData opRound(ObjectData primitive, float rad)
 	return ObjectData(primitive.d - rad, primitive.mat);;
 }
 
-float opExtrusion(vec3 p, float primitive, float h)
+ObjectData opExtrusion(vec3 p, ObjectData primitive, float h)
 {
-	vec2 w = vec2(primitive, abs(p.z)-h);
-	return min(max(w.x,w.y), 0.0) + length(max(w, 0.0));
+	vec2 w = vec2(primitive.d, abs(p.z)-h);
+	return ObjectData(min(max(w.x,w.y), 0.0) + length(max(w, 0.0)), primitive.mat);
 }
