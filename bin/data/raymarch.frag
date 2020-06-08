@@ -20,9 +20,9 @@ uniform int aoIterations;
 uniform int sceneIndex;
 uniform float aoIntensity;
 
-uniform mat4 transform;
-uniform float deformStrength;
 uniform float stepScale;
+uniform float smoothness;
+uniform float deformStrength;
 uniform float elapsedTime;
 uniform vec3 cameraPos;
 uniform Material materials[NR_MATERIALS];

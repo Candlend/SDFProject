@@ -12,14 +12,17 @@ ObjectData opUnion(ObjectData d1, ObjectData d2)
 
 ObjectData opSubtraction(ObjectData d1, ObjectData d2)
 {
+	ObjectData d;
+	d.d = max(-d1.d, d2.d);
 	if (-d1.d > d2.d)
 	{
-		return d1;
+		d.mat = d1.mat;
 	}
 	else
 	{
-		return d2;
+		d.mat = d2.mat;
 	}
+	return d;
 }
 
 ObjectData opIntersection(ObjectData d1, ObjectData d2)
@@ -104,9 +107,9 @@ vec3 opTransform(vec3 p, mat4 trans)
 	return tmp.xyz;
 }
 
-float opRound(float primitive, float rad)
+ObjectData opRound(ObjectData primitive, float rad)
 {
-	return primitive - rad;
+	return ObjectData(primitive.d - rad, primitive.mat);;
 }
 
 float opExtrusion(vec3 p, float primitive, float h)
