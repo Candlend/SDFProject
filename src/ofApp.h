@@ -7,7 +7,7 @@
 #include "Material.h"
 
 #define NR_POINT_LIGHTS 3
-#define NR_MATERIALS 3
+#define NR_MATERIALS 4
 
 class ofApp : public ofBaseApp {
 
@@ -31,6 +31,7 @@ public:
 	void setupGUI();
 
 	ofxPanel gui;
+	bool guiHidden = false;
 	ofTrueTypeFont font;
 	ofParameterGroup parameters;
 	ofParameter<float> shadowPenumbra;

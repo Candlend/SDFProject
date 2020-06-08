@@ -64,7 +64,7 @@ ObjectData scene0(vec3 pos){
 	ObjectData dots = opUnion(opUnion(opUnion(opUnion(opUnion(face1, face2), face3), face4), face5), face6);
 	ObjectData body = opSmoothIntersection(cube0, sphere0, 0.015f);
 	ObjectData dice = opSmoothSubtraction(dots, body, 0.01f);
-    ObjectData plane = ObjectData(sdPlane(pos, vec3(0.0f, -2.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 1.0f), materials[0]);
+    ObjectData plane = ObjectData(sdPlane(pos, vec3(0.0f, -2.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 1.0f), materials[3]);
     return opUnion(dice, plane);
 }
 

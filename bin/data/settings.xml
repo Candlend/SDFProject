@@ -21,49 +21,65 @@
 		<Color>0.4927, 0.5, 0, 1</Color>
 	</Point_Light_2>
 	<Scene_Index>0</Scene_Index>
-	<Step_Scale>0.5</Step_Scale>
+	<Step_Scale>1</Step_Scale>
 	<Smoothness>0.5</Smoothness>
 	<Deformation_Strength>0.1</Deformation_Strength>
 	<Lights>
 		<Directional_Light>
 			<Enabled>1</Enabled>
-			<Direction>-1, -1, -1</Direction>
-			<Color>0.5, 0.5, 0.5, 1</Color>
+			<Direction>-0.0624825, -0.359978, -0.529975</Direction>
+			<Color>0.707143, 0.588901, 0.628282, 1</Color>
 		</Directional_Light>
 		<Point_Light_0>
 			<Enabled>1</Enabled>
-			<Position>0, 1, 0</Position>
-			<Color>0.5, 0.5, 0.5, 1</Color>
+			<Position>-3.0608, 2.25161, 6.50154</Position>
+			<Color>1, 0, 0.0127319, 1</Color>
 		</Point_Light_0>
 		<Point_Light_1>
 			<Enabled>1</Enabled>
-			<Position>0, 1, 0</Position>
-			<Color>0.5, 0.5, 0.5, 1</Color>
+			<Position>6.50154, 8.62651, -3.0608</Position>
+			<Color>0, 0.938079, 1, 1</Color>
 		</Point_Light_1>
 		<Point_Light_2>
 			<Enabled>1</Enabled>
-			<Position>0, 1, 0</Position>
-			<Color>0.5, 0.5, 0.5, 1</Color>
+			<Position>7.56403, 0.126648, -3.0608</Position>
+			<Color>0.948116, 1, 0, 1</Color>
 		</Point_Light_2>
 	</Lights>
 	<Materials>
 		<Material_0>
-			<Ambient>0.114286, 0, 0.0836554, 1</Ambient>
-			<Diffuse>1, 0.0618071, 0, 1</Diffuse>
+			<Ambient>0, 0, 0.185714, 1</Ambient>
+			<Diffuse>0.0248126, 0, 1, 1</Diffuse>
 			<Specular>0.5, 0.5, 0.5, 1</Specular>
-			<Shininess>32</Shininess>
+			<Shininess>71.7995</Shininess>
 		</Material_0>
 		<Material_1>
-			<Ambient>0.125816, 0.128571, 0.123061, 1</Ambient>
-			<Diffuse>0.66759, 0.661557, 0.692857, 1</Diffuse>
-			<Specular>0.5, 0.5, 0.5, 1</Specular>
-			<Shininess>32</Shininess>
+			<Ambient>0.321531, 0, 0, 1</Ambient>
+			<Diffuse>1, 0, 0, 1</Diffuse>
+			<Specular>1, 0.669029, 0.641716, 1</Specular>
+			<Shininess>71.7995</Shininess>
 		</Material_1>
 		<Material_2>
-			<Ambient>0.836105, 1, 0.060178, 1</Ambient>
-			<Diffuse>0.5, 0.5, 0.5, 1</Diffuse>
-			<Specular>0.5, 0.5, 0.5, 1</Specular>
-			<Shininess>32</Shininess>
+			<Ambient>0.239898, 0.242424, 0.25, 1</Ambient>
+			<Diffuse>1, 1, 1, 1</Diffuse>
+			<Specular>1, 1, 1, 1</Specular>
+			<Shininess>36.7568</Shininess>
 		</Material_2>
+		<Material_3>
+			<Ambient>0.0588661, 0.0607579, 0.102202, 1</Ambient>
+			<Diffuse>0.211339, 0.254873, 0.528571, 1</Diffuse>
+			<Specular>0.108527, 0.154829, 0.282824, 1</Specular>
+			<Shininess>27.5002</Shininess>
+		</Material_3>
 	</Materials>
+	<Shadow>
+		<Use_Soft_Shadow>1</Use_Soft_Shadow>
+		<Shadow_Improvement>0</Shadow_Improvement>
+		<Shadow_Penumbra>18.6786</Shadow_Penumbra>
+	</Shadow>
+	<Ambient_Occlusion>
+		<AO_Iterations>20</AO_Iterations>
+		<AO_Step_Size>0.05</AO_Step_Size>
+		<AO_Intensity>0.0816327</AO_Intensity>
+	</Ambient_Occlusion>
 </Settings>

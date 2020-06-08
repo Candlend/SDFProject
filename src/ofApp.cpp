@@ -168,13 +168,17 @@ void ofApp::draw() {
 	quad.draw();
 	raymarchShader.end();
 	cam.end();
-	gui.draw();
-	font.drawString("fps: " + ofToString((int)ofGetFrameRate()), ofGetWidth() - 50, 20);
+	if (guiHidden) {
+		gui.draw();
+		font.drawString("fps: " + ofToString((int)ofGetFrameRate()), ofGetWidth() - 50, 20);
+	}
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-
+	if (key == OF_KEY_TAB) {
+		guiHidden = !guiHidden;
+	}
 }
 
 //--------------------------------------------------------------

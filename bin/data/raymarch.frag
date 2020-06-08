@@ -4,7 +4,7 @@
 #define MAX_MARCHING_STEPS 1000
 #define MAX_DISTANCE 100
 #define NR_POINT_LIGHTS 3
-#define NR_MATERIALS 3
+#define NR_MATERIALS 4
 
 #pragma include "struct.frag"
 #pragma include "sdPrimitive.frag"
