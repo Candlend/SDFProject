@@ -96,5 +96,71 @@ ObjectData scene1(vec3 pos){
 }
 
 ObjectData scene2(vec3 pos){
-    return ObjectData(sdSphere(pos, vec3(0.0f, 1.5f + 3.0 * sin(elapsedTime), 0.0f), 1.5f), materials[1]);
+    // float d = 1e10;
+    vec3 q;
+    
+    float an = sin(elapsedTime);
+
+	// q = - vec3(-2.0,0.0,-1.3);
+	// ObjectData sphere0 = ObjectData(sdSphere(pos, q-vec3(0.0,0.5+0.3*an,0.0), 0.55f), materials[0]);
+	// ObjectData sphere1 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1f), materials[1]);
+	ObjectData d;
+	// ObjectData d = opUnion(sphere0, sphere1);
+	{
+    // // opUnion
+	q = - vec3(-2.0,0.0,1.0);
+    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[0]);
+    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[1]); 
+    d = opUnion(d1,d2);
+    // d = min( d, dt );
+    }
+
+	{
+    // opSmoothUnion
+    q = - vec3(-2.0,0.0,-1.3);
+    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[0]);
+    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[1]); 
+    ObjectData dt = opSmoothUnion(d1,d2, 0.25);
+    d = opUnion(d, dt);
+	}
+
+	{
+    // opSubtraction
+	q = - vec3(0.0,0.0,1.0);
+    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[0]);
+    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[1]); 
+    ObjectData dt = opSubtraction(d1,d2);
+    d = opUnion( d, dt );
+	}
+
+	{
+    // opSmoothSubtraction
+    q = - vec3(0.0,0.0,-1.3);
+    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[0]);
+    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[1]); 
+    ObjectData dt = opSmoothSubtraction(d1,d2, 0.25);
+    d = opUnion( d, dt );
+	}
+
+	{
+    // opIntersection
+	q = - vec3(2.0,0.0,1.0);
+    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[0]);
+    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[1]); 
+    ObjectData dt = opIntersection(d1,d2);
+    d = opUnion( d, dt );
+    }
+
+	{
+    // opSmoothIntersection
+	q = - vec3(2.0,0.0,-1.3);
+    ObjectData d1 = ObjectData(sdSphere(pos, q+vec3(0.0,0.5+0.3*an,0.0), 0.55 ), materials[0]);
+    ObjectData d2 = ObjectData(sdRoundCube(pos, q, vec3(0.6,0.2,0.7), 0.1 ), materials[1]); 
+    ObjectData dt = opSmoothIntersection(d1,d2, 0.25);
+    d = opUnion( d, dt );
+	}	
+
+
+    return d;
 }
+
