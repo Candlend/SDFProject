@@ -35,6 +35,8 @@ uniform Material materials[NR_MATERIALS];
 uniform DirLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 
+uniform samplerCube envMap;
+
 
 #pragma include "scene.frag"
 ObjectData map(vec3 pos) {
@@ -176,16 +178,6 @@ vec3 calcPointLight(vec3 p, Material mat, PointLight light, vec3 normal, vec3 fr
     return ambient * ao + (diffuse + specular) * shadow;
 }
 
-
-vec3 shade(vec3 hitPosition, vec3 normal, vec3 viewDir, Material material) {
-	vec3 result = calcDirLight(hitPosition, material, dirLight, normal, viewDir);
-	for (int i = 0; i < NR_POINT_LIGHTS; i++) {
-		result += calcPointLight(hitPosition, material, pointLights[i], normal, hitPosition, viewDir);
-	}
-    return result;
-}
-
-
 bool rayMarch(Ray ray, out vec3 p, out Material material){
     float t = 0.0f;
     for (int i = 0; i < MAX_MARCHING_STEPS; i++) {
@@ -203,18 +195,54 @@ bool rayMarch(Ray ray, out vec3 p, out Material material){
     return false;
 }
 
+vec3 shade(vec3 hitPosition, vec3 normal, vec3 viewDir, Material material) {
+	vec3 result = calcDirLight(hitPosition, material, dirLight, normal, viewDir);
+	for (int i = 0; i < NR_POINT_LIGHTS; i++) {
+		result += calcPointLight(hitPosition, material, pointLights[i], normal, hitPosition, viewDir);
+	}
+    return result;
+}
+
 void main()
 {
-    Ray ray = generateRay(cameraPos, normalize(rayDir));
+    vec3 startPos = cameraPos;
+    vec3 I = normalize(rayDir);
+    int bounce = 0;
+    vec4 res = vec4(0.0);
+    float re = 1.0;
+
+    Ray ray = generateRay(startPos, I);
 	vec3 hitPosition;
     Material material;
 	bool hit = rayMarch(ray, hitPosition,  material);
 	if (hit) {
 		vec3 normal = calcNormal(hitPosition);
-		vec3 viewDir = normalize(cameraPos - hitPosition);
-        FragColor = vec4(shade(hitPosition, normal, viewDir, material), 1);
+		vec3 viewDir = normalize(startPos - hitPosition);
+        res = vec4(shade(hitPosition, normal, viewDir, material), 1);
+        if(material.reflectIntensity > 0)
+        {
+            vec3 outDir = -reflect(I, normal);
+            Ray newRay = generateRay(hitPosition + outDir * 0.01, outDir);
+	        vec3 newHitPosition;
+            Material newMaterial;
+	        bool newHit = rayMarch(newRay, newHitPosition, newMaterial);
+            if(newHit)
+            {
+		        vec3 newNormal = calcNormal(newHitPosition);
+		        vec3 newViewDir = normalize(hitPosition - newHitPosition);
+                res = (1.0 - material.reflectIntensity) * res + material.reflectIntensity * 
+                vec4(shade(newHitPosition, newNormal, newViewDir, newMaterial), 1);
+            }
+            else{
+                res = (1.0 - material.reflectIntensity) * res + material.reflectIntensity *
+                texture(envMap, newRay.dir);
+            }
+           //res = vec4(newHitPosition, 1.0);
+        }
     }
 	else{
-		FragColor = vec4(0.0f);
+		res = texture(envMap, ray.dir);
 	}
+   
+   FragColor = res;
 }

@@ -5,6 +5,7 @@
 #include "DirLight.h"
 #include "PointLight.h"
 #include "Material.h"
+#include "ofxEasyCubemap.h"
 
 #define NR_POINT_LIGHTS 3
 #define NR_MATERIALS 4
@@ -44,6 +45,8 @@ public:
 	ofParameter<float> stepScale;
 	ofParameter<float> smoothness;
 	ofParameter<float> deformStrength;
+	ofParameter<float> reflectIntensity;
+	ofParameter<float> fractRaito;
 	ofEasyCam cam;
 	ofShader raymarchShader;
 	ofMesh quad;
@@ -51,5 +54,6 @@ public:
 	DirLight dirLight;
 	PointLight pointLights[NR_POINT_LIGHTS];
 	Material materials[NR_MATERIALS];
+	ofxEasyCubemap cubeMap;
 	float elapsedTime;
 };

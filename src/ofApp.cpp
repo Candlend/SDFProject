@@ -99,7 +99,14 @@ void ofApp::setupGUI() {
 //--------------------------------------------------------------
 void ofApp::setup() {
 	raymarchShader.load("raymarch.vert", "raymarch.frag");
-
+	cubeMap.load(
+		"skybox/cube_front.jpg",
+		"skybox/cube_back.jpg",
+		"skybox/cube_right.jpg",
+		"skybox/cube_left.jpg",
+		"skybox/cube_top.jpg",
+		"skybox/cube_bottom.jpg"
+	);
 	glm::vec3 cameraPos = glm::vec3(0, 0, 5);
 	glm::vec3 cameraTarget = glm::vec3(0, 0, 0);
 	glm::vec3 cameraUp = glm::vec3(0, 1, 0);
@@ -135,14 +142,27 @@ void ofApp::update() {
 void ofApp::draw() {
 	cam.begin();
 	raymarchShader.begin();
+
+	raymarchShader.setUniformTexture("envMap", cubeMap.getTexture(), 0);
+
 	raymarchShader.setUniform3f("materials[0].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
 	raymarchShader.setUniform3f("materials[0].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
 	raymarchShader.setUniform3f("materials[0].specular", glm::vec3(0.8f, 0.8f, 0.8f));
 	raymarchShader.setUniform1f("materials[0].shininess", 64.0f);
+	raymarchShader.setUniform1f("materials[0].reflectIntensity", 0.0f);
+	raymarchShader.setUniform1f("materials[0].refractRaito", 0.0f);
 	raymarchShader.setUniform3f("materials[1].ambient", glm::vec3(0.2f, 0.0f, 0.0f));
 	raymarchShader.setUniform3f("materials[1].diffuse", glm::vec3(0.8f, 0.0f, 0.0f));
 	raymarchShader.setUniform3f("materials[1].specular", glm::vec3(0.8f, 0.0f, 0.0f));
 	raymarchShader.setUniform1f("materials[1].shininess", 16.0f);
+	raymarchShader.setUniform1f("materials[1].reflectIntensity", 0.0f);
+	raymarchShader.setUniform1f("materials[1].refractRaito", 0.0f);
+	raymarchShader.setUniform3f("materials[2].ambient", glm::vec3(0.0f, 0.0f, 0.0f));
+	raymarchShader.setUniform3f("materials[2].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+	raymarchShader.setUniform3f("materials[2].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+	raymarchShader.setUniform1f("materials[2].shininess", 16.0f);
+	raymarchShader.setUniform1f("materials[2].reflectIntensity", 0.0f);
+	raymarchShader.setUniform1f("materials[2].refractRaito", 0.0f);
 	raymarchShader.setUniformMatrix4f("camFrustum", camFrustum);
 	raymarchShader.setUniformMatrix4f("camToWorld", camToWorld);
 	raymarchShader.setUniform3f("cameraPos", cameraPos);

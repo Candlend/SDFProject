@@ -38,8 +38,9 @@ ObjectData scene0(vec3 pos){
 	ObjectData dots = opUnion(opUnion(opUnion(opUnion(opUnion(face1, face2), face3), face4), face5), face6);
 	ObjectData body = opSmoothIntersection(cube0, sphere0, 0.015f);
 	ObjectData dice = opSmoothSubtraction(dots, body, 0.01f);
-    ObjectData plane = ObjectData(sdPlane(pos, vec3(0.0f, -2.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 1.0f), materials[3]);
-    return opUnion(dice, plane);
+    //ObjectData plane = ObjectData(sdPlane(pos, vec3(0.0f, -2.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 1.0f), materials[3]);
+    //return opUnion(dice, plane);
+	return dice;
 }
 
 ObjectData scene1(vec3 pos){
@@ -76,9 +77,9 @@ ObjectData scene2(vec3 pos){
 	mat4 trans = mat4(c, s, 0, 0, -s, c, 0, 0, 0,0,1,0 ,0,0,0,1);
 
 	trans = trans * mat4(1,0 ,0,0,0,c, -s, 0,0,s,c,0,0,0,0,1);
-    ObjectData jelly = ObjectData(sdRoundCube(opBend(pos - vec3(3, 0, 0), deformStrength * s), vec3(3, 0, 3), vec3(2, 1, 1), 0.5), materials[0]);
+    ObjectData jelly = ObjectData(sdRoundCube(opBend(pos - vec3(3, 0, 0), 0.3 * deformStrength * s), vec3(3, 0, 3), vec3(2, 1, 1), 0.5), materials[2]);
 	
-    ObjectData plane = ObjectData(sdPlane(pos, vec3(0.0f, -2.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 1.0f), materials[0]);
+    ObjectData plane = ObjectData(sdPlane(pos, vec3(0.0f, -2.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 1.0f * s), materials[0]);
 
 	ObjectData cross3d = opRound(
 		opExtrusion(
@@ -86,13 +87,13 @@ ObjectData scene2(vec3 pos){
 			ObjectData(
 				sd2DCross(
 					(pos - vec3(-5, 0, 0)).xy,
-					vec2(1.0, 0.25),
-					0.2),
-				materials[0]),
-			5 * deformStrength * s + 5 * deformStrength),
-		deformStrength * 0.1);
+					vec2(3.0, 1.5),
+					0.8),
+				materials[2]),
+			15 * deformStrength * s + 15 * deformStrength),
+		deformStrength);
 
-	ObjectData cylinder = ObjectData(sdCylinder(opTransform(pos, trans), vec3(0,0,0), 0.5, 2.0), materials[0]);
+	ObjectData cylinder = ObjectData(sdCylinder(opTransform(pos, trans), vec3(0,0,0), 0.5, 2.0), materials[2]);
 
 	return opSmoothUnion(opUnion(opUnion(jelly, cylinder), cross3d), plane, smoothness);
 }

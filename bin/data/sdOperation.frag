@@ -47,6 +47,8 @@ ObjectData opSmoothUnion(ObjectData d1, ObjectData d2, float k)
 	newMat.diffuse = mix(d2.mat.diffuse, d1.mat.diffuse, h);
 	newMat.specular = mix(d2.mat.specular, d1.mat.specular, h);
 	newMat.shininess = mix(d2.mat.shininess, d1.mat.shininess, h);
+	newMat.reflectIntensity = mix(d2.mat.reflectIntensity, d1.mat.reflectIntensity, h);
+	newMat.refractRaito = mix(d2.mat.refractRaito, d1.mat.refractRaito, h);
 
 	newObjData.d = mix(d2.d, d1.d, h) - k * h * (1.0 - h);
 	newObjData.mat = newMat;
@@ -63,6 +65,8 @@ ObjectData opSmoothSubtraction( ObjectData d1, ObjectData d2, float k )
 	newMat.diffuse = mix(d2.mat.diffuse, d1.mat.diffuse, h);
 	newMat.specular = mix(d2.mat.specular, d1.mat.specular, h);
 	newMat.shininess = mix(d2.mat.shininess, d1.mat.shininess, h);
+	newMat.reflectIntensity = mix(d2.mat.reflectIntensity, d1.mat.reflectIntensity, h);
+	newMat.refractRaito = mix(d2.mat.refractRaito, d1.mat.refractRaito, h);
 
 	newObjData.d = mix(d2.d, -d1.d, h) + k * h * (1.0 - h);
 	newObjData.mat = newMat;
@@ -80,6 +84,8 @@ ObjectData opSmoothIntersection( ObjectData d1, ObjectData d2, float k )
 	newMat.diffuse = mix(d2.mat.diffuse, d1.mat.diffuse, h);
 	newMat.specular = mix(d2.mat.specular, d1.mat.specular, h);
 	newMat.shininess = mix(d2.mat.shininess, d1.mat.shininess, h);
+	newMat.reflectIntensity = mix(d2.mat.reflectIntensity, d1.mat.reflectIntensity, h);
+	newMat.refractRaito = mix(d2.mat.refractRaito, d1.mat.refractRaito, h);
 
 	newObjData.d = mix(d2.d, d1.d, h) + k * h * (1.0 - h);
 	newObjData.mat = newMat;
