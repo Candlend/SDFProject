@@ -216,9 +216,20 @@ vec3 bounce(BounceData bd){
 		vec3 normal = calcNormal(hitPosition);
 		vec3 viewDir = normalize(ray.ori - hitPosition);
 		res = shade(hitPosition, normal, viewDir, material);
-		vec3 new_dir = reflect(ray.dir, normal);
-		rayArray[rayCount].ray = generateRay(hitPosition + 0.01 * normal, new_dir);
-		rayArray[rayCount].intensity = bd.intensity * material.reflectIntensity;
+
+		float R = material.refractRaito;
+		R = (1.0 - R) / (1.0 + R);
+		R = R * R;
+		R = R + (1.0 - R) * pow(1.0 - max(dot(-viewDir, normal), 0.0), 3);
+		
+		vec3 reflect_dir = reflect(ray.dir, normal);
+		rayArray[rayCount].ray = generateRay(hitPosition + 0.01 * normal, reflect_dir);
+		rayArray[rayCount].intensity = R * bd.intensity * material.reflectIntensity;
+		rayCount += 1;
+
+		vec3 refract_dir = refract(ray.dir, normal, material.refractRaito);
+		rayArray[rayCount].ray = generateRay(hitPosition + 0.01 * normal, refract_dir);
+		rayArray[rayCount].intensity = (1.0 - R) * bd.intensity * material.refractIntensity;
 		rayCount += 1;
 	}
 	else {
@@ -226,7 +237,6 @@ vec3 bounce(BounceData bd){
 	}
 	return res;
 }
-
 void main()
 {
     rayArray[0].ray = generateRay(cameraPos, normalize(rayDir));
