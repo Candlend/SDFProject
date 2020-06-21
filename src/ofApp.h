@@ -40,6 +40,7 @@ public:
 	ofParameter<bool> shadowImprovement;
 	ofParameter<float> aoStepSize;
 	ofParameter<int> sceneIndex;
+	ofParameter<int> bounceTime;
 	ofParameter<int> aoIterations;
 	ofParameter<float> aoIntensity;
 	ofParameter<float> stepScale;
