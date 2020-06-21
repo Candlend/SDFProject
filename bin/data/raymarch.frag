@@ -38,6 +38,9 @@ uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform samplerCube envMap;
 uniform int bounceTime;
 
+BounceData[8] rayArray;
+int rayCount;
+
 #pragma include "scene.frag"
 ObjectData map(vec3 pos) {
     switch(sceneIndex)
@@ -203,15 +206,20 @@ vec3 shade(vec3 hitPosition, vec3 normal, vec3 viewDir, Material material) {
     return result;
 }
 
-vec3 bounce(inout Ray ray, out vec3 hitPosition, out Material material, out bool hit){
-	hit = rayMarch(ray, hitPosition,  material);
+vec3 bounce(BounceData bd){
+	Ray ray = bd.ray;
+	vec3 hitPosition;
+	Material material;
+	bool hit = rayMarch(ray, hitPosition,  material);
 	vec3 res;
 	if (hit) {
 		vec3 normal = calcNormal(hitPosition);
 		vec3 viewDir = normalize(ray.ori - hitPosition);
 		res = shade(hitPosition, normal, viewDir, material);
 		vec3 new_dir = reflect(ray.dir, normal);
-		ray = generateRay(hitPosition + 0.01 * normal, new_dir);
+		rayArray[rayCount].ray = generateRay(hitPosition + 0.01 * normal, new_dir);
+		rayArray[rayCount].intensity = bd.intensity * material.reflectIntensity;
+		rayCount += 1;
 	}
 	else {
 		res = texture(envMap, ray.dir).xyz;
@@ -221,17 +229,18 @@ vec3 bounce(inout Ray ray, out vec3 hitPosition, out Material material, out bool
 
 void main()
 {
-    Ray ray = generateRay(cameraPos, normalize(rayDir));
+    rayArray[0].ray = generateRay(cameraPos, normalize(rayDir));
+	rayArray[0].intensity = 1.0f;
+	rayCount = 1;
 	float reflectIntensity = 1.0f;
     vec3 res;
 	for (int i = 0; i < bounceTime; i++) {
-		vec3 hitPosition;
-		Material material;
-		bool hit;
-		res = (1 - reflectIntensity) * res + reflectIntensity * bounce(ray, hitPosition, material, hit);
-		reflectIntensity *= material.reflectIntensity;
-		if (!hit) {
-			break;
+		int tmpRayCount = rayCount;
+		BounceData[8] tmpRayArray = rayArray;
+		rayCount = 0;
+		for (int j = 0; j < tmpRayCount; j++) {
+			res = (1 - tmpRayArray[j].intensity) * res + 
+			tmpRayArray[j].intensity * bounce(tmpRayArray[j]);
 		}
 	}
 	FragColor = vec4(res, 1);

@@ -4,6 +4,12 @@ struct Ray
 	vec3 dir;
 };
 
+struct BounceData
+{
+	Ray ray;
+	float intensity;
+};
+
 struct Material {
     vec3 ambient;
 	vec3 diffuse;
