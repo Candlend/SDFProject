@@ -27,7 +27,7 @@
 	<Lights>
 		<Directional_Light>
 			<Enabled>1</Enabled>
-			<Direction>1.0, -1.0, 0.0</Direction>
+			<Direction>1, -1, 0</Direction>
 			<Color>0.707143, 0.588901, 0.628282, 1</Color>
 		</Directional_Light>
 		<Point_Light_0>
@@ -52,32 +52,36 @@
 			<Diffuse>0.0248126, 0, 1, 1</Diffuse>
 			<Specular>0.5, 0.5, 0.5, 1</Specular>
 			<Shininess>71.7995</Shininess>
-			<Reflect>1.0</Reflect>
-			<Refract>0</Refract>
+			<Reflect_Intensity>1.0</Reflect_Intensity>
+			<Refract_Raito>0</Refract_Raito>
+			<Refract_Intensity>0</Refract_Intensity>
 		</Material_0>
 		<Material_1>
 			<Ambient>0.321531, 0, 0, 1</Ambient>
 			<Diffuse>1, 0, 0, 1</Diffuse>
 			<Specular>1, 0.669029, 0.641716, 1</Specular>
 			<Shininess>71.7995</Shininess>
-			<Reflect>1.0</Reflect>
-			<Refract>0</Refract>
+			<Reflect_Intensity>1.0</Reflect_Intensity>
+			<Refract_Raito>0</Refract_Raito>
+			<Refract_Intensity>0</Refract_Intensity>
 		</Material_1>
 		<Material_2>
 			<Ambient>0.239898, 0.242424, 0.25, 1</Ambient>
 			<Diffuse>1, 1, 1, 1</Diffuse>
 			<Specular>1, 1, 1, 1</Specular>
 			<Shininess>36.7568</Shininess>
-			<Reflect>1.0</Reflect>
-			<Refract>0</Refract>
+			<Reflect_Intensity>1.0</Reflect_Intensity>
+			<Refract_Raito>0</Refract_Raito>
+			<Refract_Intensity>0</Refract_Intensity>
 		</Material_2>
 		<Material_3>
 			<Ambient>0.0588661, 0.0607579, 0.102202, 1</Ambient>
 			<Diffuse>0.211339, 0.254873, 0.528571, 1</Diffuse>
 			<Specular>0.108527, 0.154829, 0.282824, 1</Specular>
 			<Shininess>27.5002</Shininess>
-			<Reflect>0.432528</Reflect>
-			<Refract>0</Refract>
+			<Reflect_Intensity>0</Reflect_Intensity>
+			<Refract_Raito>0</Refract_Raito>
+			<Refract_Intensity>0</Refract_Intensity>
 		</Material_3>
 	</Materials>
 	<Shadow>
@@ -90,4 +94,5 @@
 		<AO_Step_Size>0.05</AO_Step_Size>
 		<AO_Intensity>0.0816327</AO_Intensity>
 	</Ambient_Occlusion>
+	<Bounce_Time>2</Bounce_Time>
 </Settings>

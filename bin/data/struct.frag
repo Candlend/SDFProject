@@ -17,6 +17,7 @@ struct Material {
 	float shininess;
 	float reflectIntensity;
 	float refractRaito;
+	float refractIntensity;
 }; 
 
 struct ObjectData {

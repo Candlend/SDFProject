@@ -46,8 +46,6 @@ public:
 	ofParameter<float> stepScale;
 	ofParameter<float> smoothness;
 	ofParameter<float> deformStrength;
-	ofParameter<float> reflectIntensity;
-	ofParameter<float> fractRaito;
 	ofEasyCam cam;
 	ofShader raymarchShader;
 	ofMesh quad;
