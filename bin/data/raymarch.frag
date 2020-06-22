@@ -226,8 +226,12 @@ vec3 bounce(BounceData bd, out float intensity){
 	if (hit) {
 		vec3 normal = calcNormal(hitPosition);
 		vec3 viewDir = normalize(ray.ori - hitPosition);
-		if(map(hitPosition).d > 0)
-		res = shade(hitPosition, normal, viewDir, material);
+		if(map(hitPosition).d > 0){
+			res = shade(hitPosition, normal, viewDir, material);
+		}
+		else{
+			res = shade(hitPosition, -normal, viewDir, material);
+		}
 
 		if(material.refractIntensity > 0)
 		{
@@ -284,6 +288,9 @@ void main()
 			float intensity;
 			vec3 bounce_res = bounce(tmpRayArray[j], intensity);
 			res += intensity * bounce_res;
+		}
+		if (rayCount == 0) {
+			break;
 		}
 	}
 	FragColor = vec4(res, 1);
