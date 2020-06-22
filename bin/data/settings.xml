@@ -20,7 +20,7 @@
 		<Position>2.12411, 1.08289, -2.04082</Position>
 		<Color>0.4927, 0.5, 0, 1</Color>
 	</Point_Light_2>
-	<Scene_Index>0</Scene_Index>
+	<Scene_Index>4</Scene_Index>
 	<Step_Scale>1</Step_Scale>
 	<Smoothness>0.5</Smoothness>
 	<Deformation_Strength>0.1</Deformation_Strength>
@@ -52,36 +52,36 @@
 			<Diffuse>0.0248126, 0, 1, 1</Diffuse>
 			<Specular>0.5, 0.5, 0.5, 1</Specular>
 			<Shininess>71.7995</Shininess>
-			<Reflect_Intensity>1.0</Reflect_Intensity>
-			<Refract_Raito>0</Refract_Raito>
-			<Refract_Intensity>0</Refract_Intensity>
+			<ReflectIntensity>0</ReflectIntensity>
+			<RefractRatio>0</RefractRatio>
+			<RefractIntensity>0</RefractIntensity>
 		</Material_0>
 		<Material_1>
 			<Ambient>0.321531, 0, 0, 1</Ambient>
 			<Diffuse>1, 0, 0, 1</Diffuse>
 			<Specular>1, 0.669029, 0.641716, 1</Specular>
 			<Shininess>71.7995</Shininess>
-			<Reflect_Intensity>1.0</Reflect_Intensity>
-			<Refract_Raito>0</Refract_Raito>
-			<Refract_Intensity>0</Refract_Intensity>
+			<ReflectIntensity>0</ReflectIntensity>
+			<RefractRatio>0</RefractRatio>
+			<RefractIntensity>0</RefractIntensity>
 		</Material_1>
 		<Material_2>
 			<Ambient>0.239898, 0.242424, 0.25, 1</Ambient>
 			<Diffuse>1, 1, 1, 1</Diffuse>
 			<Specular>1, 1, 1, 1</Specular>
 			<Shininess>36.7568</Shininess>
-			<Reflect_Intensity>1.0</Reflect_Intensity>
-			<Refract_Raito>0</Refract_Raito>
-			<Refract_Intensity>0</Refract_Intensity>
+			<ReflectIntensity>0</ReflectIntensity>
+			<RefractRatio>0.67</RefractRatio>
+			<RefractIntensity>1</RefractIntensity>
 		</Material_2>
 		<Material_3>
 			<Ambient>0.0588661, 0.0607579, 0.102202, 1</Ambient>
 			<Diffuse>0.211339, 0.254873, 0.528571, 1</Diffuse>
 			<Specular>0.108527, 0.154829, 0.282824, 1</Specular>
 			<Shininess>27.5002</Shininess>
-			<Reflect_Intensity>0</Reflect_Intensity>
-			<Refract_Raito>0</Refract_Raito>
-			<Refract_Intensity>0</Refract_Intensity>
+			<ReflectIntensity>0</ReflectIntensity>
+			<RefractRatio>0</RefractRatio>
+			<RefractIntensity>0</RefractIntensity>
 		</Material_3>
 	</Materials>
 	<Shadow>
@@ -94,5 +94,5 @@
 		<AO_Step_Size>0.05</AO_Step_Size>
 		<AO_Intensity>0.0816327</AO_Intensity>
 	</Ambient_Occlusion>
-	<Bounce_Time>2</Bounce_Time>
+	<Bounce_Time>4</Bounce_Time>
 </Settings>

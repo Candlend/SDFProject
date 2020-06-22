@@ -164,3 +164,7 @@ ObjectData scene3(vec3 pos){
     return d;
 }
 
+
+ObjectData scene4(vec3 pos){
+	return ObjectData(sdCube(pos, vec3(0), vec3(1)), materials[2]);
+}

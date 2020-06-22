@@ -16,7 +16,7 @@ struct Material {
 	vec3 specular;
 	float shininess;
 	float reflectIntensity;
-	float refractRaito;
+	float refractRatio;
 	float refractIntensity;
 }; 
 

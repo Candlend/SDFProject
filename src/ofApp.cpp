@@ -58,8 +58,8 @@ static glm::mat4 GetCamToWorld(ofCamera cam, bool vFlip = true)
 
 void ofApp::setupGUI() {
 	parameters.setName("Settings");
-	parameters.add(sceneIndex.set("Scene Index", 0, 0, 3));
-	parameters.add(bounceTime.set("Bounce Time", 2, 1, 3));
+	parameters.add(sceneIndex.set("Scene Index", 4, 0, 4));
+	parameters.add(bounceTime.set("Bounce Time", 2, 1, 4));
 	parameters.add(stepScale.set("Step Scale", 0.5f, 0.0f, 1.0f));
 	parameters.add(smoothness.set("Smoothness", 0.5f, 0.0f, 1.0f));
 	parameters.add(deformStrength.set("Deformation Strength", 0.1f, 0.0f, 1.0f));
@@ -146,27 +146,27 @@ void ofApp::draw() {
 
 	raymarchShader.setUniformTexture("envMap", cubeMap.getTexture(), 0);
 
-	raymarchShader.setUniform3f("materials[0].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-	raymarchShader.setUniform3f("materials[0].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
-	raymarchShader.setUniform3f("materials[0].specular", glm::vec3(0.8f, 0.8f, 0.8f));
-	raymarchShader.setUniform1f("materials[0].shininess", 64.0f);
-	raymarchShader.setUniform1f("materials[0].reflectIntensity", 0.0f);
-	raymarchShader.setUniform1f("materials[0].refractRaito", 0.0f);
-	raymarchShader.setUniform1f("materials[0].refractIntensity", 0.0f);
-	raymarchShader.setUniform3f("materials[1].ambient", glm::vec3(0.2f, 0.0f, 0.0f));
-	raymarchShader.setUniform3f("materials[1].diffuse", glm::vec3(0.8f, 0.0f, 0.0f));
-	raymarchShader.setUniform3f("materials[1].specular", glm::vec3(0.8f, 0.0f, 0.0f));
-	raymarchShader.setUniform1f("materials[1].shininess", 16.0f);
-	raymarchShader.setUniform1f("materials[1].reflectIntensity", 0.0f);
-	raymarchShader.setUniform1f("materials[1].refractRaito", 0.0f);
-	raymarchShader.setUniform1f("materials[1].refractIntensity", 0.0f);
-	raymarchShader.setUniform3f("materials[2].ambient", glm::vec3(0.0f, 0.0f, 0.0f));
-	raymarchShader.setUniform3f("materials[2].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
-	raymarchShader.setUniform3f("materials[2].specular", glm::vec3(1.0f, 1.0f, 1.0f));
-	raymarchShader.setUniform1f("materials[2].shininess", 16.0f);
-	raymarchShader.setUniform1f("materials[2].reflectIntensity", 0.0f);
-	raymarchShader.setUniform1f("materials[2].refractRaito", 0.0f);
-	raymarchShader.setUniform1f("materials[2].refractIntensity", 0.0f);
+	//raymarchShader.setUniform3f("materials[0].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+	//raymarchShader.setUniform3f("materials[0].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+	//raymarchShader.setUniform3f("materials[0].specular", glm::vec3(0.8f, 0.8f, 0.8f));
+	//raymarchShader.setUniform1f("materials[0].shininess", 64.0f);
+	//raymarchShader.setUniform1f("materials[0].reflectIntensity", 0.0f);
+	//raymarchShader.setUniform1f("materials[0].refractRatio", 0.0f);
+	//raymarchShader.setUniform1f("materials[0].refractIntensity", 0.0f);
+	//raymarchShader.setUniform3f("materials[1].ambient", glm::vec3(0.2f, 0.0f, 0.0f));
+	//raymarchShader.setUniform3f("materials[1].diffuse", glm::vec3(0.8f, 0.0f, 0.0f));
+	//raymarchShader.setUniform3f("materials[1].specular", glm::vec3(0.8f, 0.0f, 0.0f));
+	//raymarchShader.setUniform1f("materials[1].shininess", 16.0f);
+	//raymarchShader.setUniform1f("materials[1].reflectIntensity", 0.0f);
+	//raymarchShader.setUniform1f("materials[1].refractRatio", 0.0f);
+	//raymarchShader.setUniform1f("materials[1].refractIntensity", 0.0f);
+	//raymarchShader.setUniform3f("materials[2].ambient", glm::vec3(0.0f, 0.0f, 0.0f));
+	//raymarchShader.setUniform3f("materials[2].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+	//raymarchShader.setUniform3f("materials[2].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+	//raymarchShader.setUniform1f("materials[2].shininess", 16.0f);
+	//raymarchShader.setUniform1f("materials[2].reflectIntensity", 0.0f);
+	//raymarchShader.setUniform1f("materials[2].refractRatio", 0.0f);
+	//raymarchShader.setUniform1f("materials[2].refractIntensity", 0.0f);
 	raymarchShader.setUniformMatrix4f("camFrustum", camFrustum);
 	raymarchShader.setUniformMatrix4f("camToWorld", camToWorld);
 	raymarchShader.setUniform3f("cameraPos", cameraPos);
@@ -203,6 +203,10 @@ void ofApp::draw() {
 void ofApp::keyPressed(int key) {
 	if (key == OF_KEY_TAB) {
 		guiHidden = !guiHidden;
+	}
+	if (key == 'r')
+	{
+		raymarchShader.load("raymarch.vert", "raymarch.frag");
 	}
 }
 

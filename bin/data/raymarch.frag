@@ -1,10 +1,11 @@
 #version 410
 
 #define EPSILON 0.0001
-#define MAX_MARCHING_STEPS 300
+#define MAX_MARCHING_STEPS 1000
 #define MAX_DISTANCE 100
 #define NR_POINT_LIGHTS 3
 #define NR_MATERIALS 4
+#define BOUNCE_ARRAY_MAX 32
 
 #pragma include "struct.frag"
 #pragma include "sdPrimitive.frag"
@@ -38,7 +39,7 @@ uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform samplerCube envMap;
 uniform int bounceTime;
 
-BounceData[8] rayArray;
+BounceData[BOUNCE_ARRAY_MAX] rayArray;
 int rayCount;
 
 #pragma include "scene.frag"
@@ -49,6 +50,7 @@ ObjectData map(vec3 pos) {
         case 1: return scene1(pos);
         case 2: return scene2(pos);
         case 3: return scene3(pos);
+		case 4: return scene4(pos);
     }
 }
 
@@ -144,7 +146,7 @@ vec3 calcDirLight(vec3 p, Material mat, DirLight light, vec3 normal, vec3 viewDi
 		shadow = hardShadow(shadowRay, 0.0, MAX_DISTANCE);
 	}
 	float ao = calcAO(p, normal);
-    return ambient * ao + (diffuse + specular) * shadow;
+    return ambient * 1 + (diffuse + specular) * 1;
 }
 
 vec3 calcPointLight(vec3 p, Material mat, PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
@@ -178,7 +180,7 @@ vec3 calcPointLight(vec3 p, Material mat, PointLight light, vec3 normal, vec3 fr
 		shadow = hardShadow(shadowRay, 0.0, distance);
 	}
 	float ao = calcAO(p, normal);
-    return ambient * ao + (diffuse + specular) * shadow;
+    return ambient * 1 + (diffuse + specular) * 1;
 }
 
 bool rayMarch(Ray ray, out vec3 p, out Material material){
@@ -193,7 +195,7 @@ bool rayMarch(Ray ray, out vec3 p, out Material material){
         if (abs(d) < EPSILON) {
             return true;
         }
-        t += d * stepScale;
+        t += abs(d) * stepScale;
     }
     return false;
 }
@@ -206,31 +208,55 @@ vec3 shade(vec3 hitPosition, vec3 normal, vec3 viewDir, Material material) {
     return result;
 }
 
+float schlick(vec3 I, vec3 N, float R)
+{
+	float tmp = ((1.0 - R) / (1.0 + R)) * ((1.0 - R) / (1.0 + R)) ;
+	tmp = tmp + (1.0 - tmp) * pow(1.0 - max(dot(I, N), 0.0), 3.0);
+	return tmp;
+}
+
 vec3 bounce(BounceData bd){
 	Ray ray = bd.ray;
 	vec3 hitPosition;
 	Material material;
 	bool hit = rayMarch(ray, hitPosition,  material);
+	float R = 1.0;
 	vec3 res;
 	if (hit) {
 		vec3 normal = calcNormal(hitPosition);
 		vec3 viewDir = normalize(ray.ori - hitPosition);
+		if(map(hitPosition).d > 0)
 		res = shade(hitPosition, normal, viewDir, material);
 
-		float R = material.refractRaito;
-		R = (1.0 - R) / (1.0 + R);
-		R = R * R;
-		R = R + (1.0 - R) * pow(1.0 - max(dot(-viewDir, normal), 0.0), 3);
-		
-		vec3 reflect_dir = reflect(ray.dir, normal);
-		rayArray[rayCount].ray = generateRay(hitPosition + 0.01 * normal, reflect_dir);
-		rayArray[rayCount].intensity = R * bd.intensity * material.reflectIntensity;
-		rayCount += 1;
-
-		vec3 refract_dir = refract(ray.dir, normal, material.refractRaito);
-		rayArray[rayCount].ray = generateRay(hitPosition + 0.01 * normal, refract_dir);
-		rayArray[rayCount].intensity = (1.0 - R) * bd.intensity * material.refractIntensity;
-		rayCount += 1;
+		if(material.refractIntensity > 0)
+		{
+			vec3 refract_dir;
+			if(map(hitPosition).d > 0)
+			{
+				refract_dir = refract(ray.dir, normal, material.refractRatio);
+				R = schlick(viewDir, normal, material.refractRatio);
+				rayArray[rayCount].ray = generateRay(hitPosition - 0.01 * normal, refract_dir);
+				rayArray[rayCount].intensity = (1.0 - R) * bd.intensity * material.refractIntensity;
+				rayCount += 1;
+			}
+			else 
+			{
+				refract_dir = refract(ray.dir, -normal, 1.0 / material.refractRatio);
+				R = schlick(viewDir, -normal, 1.0 / material.refractRatio);
+				if (refract_dir != vec3(0.0)) {
+					rayArray[rayCount].ray = generateRay(hitPosition + 0.01 * normal, refract_dir);
+					rayArray[rayCount].intensity = (1.0 - R) * bd.intensity * material.refractIntensity;
+					rayCount += 1;
+				}
+			}
+		}
+		if(material.reflectIntensity > 0)
+		{
+			vec3 reflect_dir = reflect(ray.dir, normal);
+			rayArray[rayCount].ray = generateRay(hitPosition + 0.01 * normal, reflect_dir);
+			rayArray[rayCount].intensity = R * bd.intensity * material.reflectIntensity;
+			rayCount += 1;
+		}
 	}
 	else {
 		res = texture(envMap, ray.dir).xyz;
@@ -242,11 +268,10 @@ void main()
     rayArray[0].ray = generateRay(cameraPos, normalize(rayDir));
 	rayArray[0].intensity = 1.0f;
 	rayCount = 1;
-	float reflectIntensity = 1.0f;
     vec3 res;
 	for (int i = 0; i < bounceTime; i++) {
 		int tmpRayCount = rayCount;
-		BounceData[8] tmpRayArray = rayArray;
+		BounceData[BOUNCE_ARRAY_MAX] tmpRayArray = rayArray;
 		rayCount = 0;
 		for (int j = 0; j < tmpRayCount; j++) {
 			res = (1 - tmpRayArray[j].intensity) * res + 
