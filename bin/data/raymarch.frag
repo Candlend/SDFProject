@@ -146,7 +146,7 @@ vec3 calcDirLight(vec3 p, Material mat, DirLight light, vec3 normal, vec3 viewDi
 		shadow = hardShadow(shadowRay, 0.0, MAX_DISTANCE);
 	}
 	float ao = calcAO(p, normal);
-    return ambient * 1 + (diffuse + specular) * 1;
+    return ambient * ao + (diffuse + specular) * shadow;
 }
 
 vec3 calcPointLight(vec3 p, Material mat, PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
@@ -180,7 +180,7 @@ vec3 calcPointLight(vec3 p, Material mat, PointLight light, vec3 normal, vec3 fr
 		shadow = hardShadow(shadowRay, 0.0, distance);
 	}
 	float ao = calcAO(p, normal);
-    return ambient * 1 + (diffuse + specular) * 1;
+    return ambient * ao + (diffuse + specular) * shadow;
 }
 
 bool rayMarch(Ray ray, out vec3 p, out Material material){
@@ -274,6 +274,7 @@ vec3 bounce(BounceData bd, out float intensity){
 	intensity *= bd.intensity;
 	return res;
 }
+
 void main()
 {
     rayArray[0].ray = generateRay(cameraPos, normalize(rayDir));
