@@ -20,8 +20,8 @@
 		<Position>2.12411, 1.08289, -2.04082</Position>
 		<Color>0.4927, 0.5, 0, 1</Color>
 	</Point_Light_2>
-	<Scene_Index>3</Scene_Index>
-	<Step_Scale>1</Step_Scale>
+	<Scene_Index>0</Scene_Index>
+	<Step_Scale>0.98</Step_Scale>
 	<Smoothness>0.5</Smoothness>
 	<Deformation_Strength>0.1</Deformation_Strength>
 	<Lights>
@@ -52,26 +52,26 @@
 			<Diffuse>0.0248126, 0, 1, 1</Diffuse>
 			<Specular>0.5, 0.5, 0.5, 1</Specular>
 			<Shininess>71.7995</Shininess>
-			<ReflectIntensity>0</ReflectIntensity>
-			<RefractRatio>0</RefractRatio>
-			<RefractIntensity>0</RefractIntensity>
+			<ReflectIntensity>1</ReflectIntensity>
+			<RefractRatio>0.807372</RefractRatio>
+			<RefractIntensity>0.750104</RefractIntensity>
 		</Material_0>
 		<Material_1>
 			<Ambient>0.321531, 0, 0, 1</Ambient>
 			<Diffuse>1, 0, 0, 1</Diffuse>
 			<Specular>1, 0.669029, 0.641716, 1</Specular>
 			<Shininess>71.7995</Shininess>
-			<ReflectIntensity>0.645981</ReflectIntensity>
-			<RefractRatio>0.260725</RefractRatio>
-			<RefractIntensity>1</RefractIntensity>
+			<ReflectIntensity>1</ReflectIntensity>
+			<RefractRatio>0.838609</RefractRatio>
+			<RefractIntensity>0.547064</RefractIntensity>
 		</Material_1>
 		<Material_2>
-			<Ambient>0.239898, 0.242424, 0.25, 1</Ambient>
-			<Diffuse>1, 1, 1, 1</Diffuse>
+			<Ambient>0.233044, 0.235498, 0.242857, 1</Ambient>
+			<Diffuse>0.35, 0.35, 0.35, 1</Diffuse>
 			<Specular>1, 1, 1, 1</Specular>
 			<Shininess>36.7568</Shininess>
 			<ReflectIntensity>1</ReflectIntensity>
-			<RefractRatio>0.67</RefractRatio>
+			<RefractRatio>0.869846</RefractRatio>
 			<RefractIntensity>1</RefractIntensity>
 		</Material_2>
 		<Material_3>
@@ -94,5 +94,5 @@
 		<AO_Step_Size>0.05</AO_Step_Size>
 		<AO_Intensity>0.0816327</AO_Intensity>
 	</Ambient_Occlusion>
-	<Bounce_Time>4</Bounce_Time>
+	<Bounce_Time>8</Bounce_Time>
 </Settings>
